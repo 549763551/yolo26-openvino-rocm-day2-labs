@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yolo26-openvino-rocm-day2-labs"
-version = "2.0.0"
+version = "2.0.1"
 description = "YOLO26 Day 02 - AI Inference Acceleration with OpenVINO & AMD ROCm (AMD CPU + Radeon PRO W7900)"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"

@@ -84,3 +84,54 @@ results/latest.json                              # merged view for charts/README
 
 Every chart in `assets/slides/` embeds the run id, the CSV path and its
 SHA256 prefix, so any figure can be regenerated and audited from raw data.
+
+---
+
+## v2.0.1 additions — formal campaigns & evidence chain
+
+**Formal campaigns** (`scripts/run_campaign.py`, e.g.
+`validation/v2.0.1/campaigns/c20261108_1108/`):
+
+- **Rounds**: every latency variant is measured in **3 independent rounds ×
+  50 timed samples** (warm-up 10 excluded in each round); published P50/P95
+  are the **median across rounds**, with per-round values and spread recorded
+  in `CAMPAIGN.json → aggregate`.
+- **Interleaving**: PyTorch/OpenVINO order alternates between rounds
+  (A/B then B/A) to cancel time drift.
+- **CPU protocol**: process pinned to 16 quiet CPUs (one NUMA node, re-picked
+  per round, recorded per run in `meta.extra.affinity_cpus`) matching the
+  16-core **cgroup quota**; PyTorch CPU threads pinned to 8 (measured optimum
+  under the quota). Rationale: >16 threads triggers cgroup throttling and a
+  deterministic bimodal latency — see
+  `validation/v2.0.1/DIAGNOSIS_CPU_BIMODAL.md` (throttling proven via
+  `/sys/fs/cgroup/cpu.stat` counters).
+- **Shared-host disclosure**: host load average and cgroup throttle counters
+  are recorded around every round (`CAMPAIGN.json → round_env`). Numbers are
+  medians of rounds; per-round spread is published. We never claim exclusive
+  hardware.
+- **Fresh quantization**: Lab C rebuilds the INT8 model in-campaign with the
+  full calibration manifest recorded in `weights/int8_cache/*/CACHE_KEY.json`
+  (identity key: model sha + FP32 export sha + calibration dataset sha +
+  count + preset + NNCF version + subset size + imgsz).
+- **Lab E evidence**: per-image stage timings AND per-detection outputs are
+  stored as records JSON; the throughput gain is only published when
+  per-detection parity (class + IoU ≥ 0.95 + conf ± 0.02) passes for every
+  image; serial e2e (no queue) and pipeline burst e2e (queue-inclusive) are
+  reported as **separate scopes**, never subtracted.
+
+**Evidence chain** (fixes the v2.0.0 self-hash defect):
+
+1. raw per-iteration CSV — immutable measurement record;
+2. `*_summary.json` — references the CSV sha256, never its own;
+3. directory `SHA256SUMS` — written after final bytes, covers CSVs,
+   summaries and records; campaign root `SHA256SUMS` covers everything;
+4. `scripts/verify_evidence.py --campaign <dir>` — recomputes every hash and
+   statistic from bytes (tamper-proof verification);
+5. `scripts/audit_benchmarks.py --campaign <dir>` — independent recomputation
+   of P50/P95/throughput/speedups + config invariants (model sha, imgsz,
+   batch, device, warm-up exclusion) + parity + mAP cross-checks; writes
+   `AUDIT_REPORT.md`.
+
+**Batch semantics**: forward-only throughput is always labeled separately
+from end-to-end; batch time ÷ batch size is an *equivalent per-image compute
+cost*, never a request latency (both are measured).
