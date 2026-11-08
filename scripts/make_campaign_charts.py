@@ -72,19 +72,21 @@ def main() -> None:
         foot=foot(croot, c, ["labB_pt", "labB_ov"],
                   " · scope: e2e per image, same CPU, A/B interleaved order"))
 
-    from course.quantization import model_dir_size_mb
-    from course.model import openvino_fp32_dir, openvino_int8_dir
-    fp32_dir = openvino_fp32_dir()
-    int8_dir = openvino_int8_dir()
+    # Chart reproduction runs CPU-only on a clean clone, without OpenVINO or
+    # model export directories. Export sizes are archived reference figures
+    # from v2.0.0, not fresh size measurements in v2.0.1.
+    old_reference = json.loads((REPO / "results/latest.json").read_text())
+    ref_sizes = old_reference["labC"]["size_mb"]
     charts.chart_fp32_vs_int8(
         {"stats": {"p50_ms": head["labC"]["fp32_p50_ms"]}},
         {"stats": {"p50_ms": head["labC"]["int8_p50_ms"]}},
-        model_dir_size_mb(fp32_dir), model_dir_size_mb(int8_dir),
+        ref_sizes["fp32"], ref_sizes["int8"],
         maps["openvino_fp32_cpu_640"]["map50_95"],
         maps["openvino_int8_cpu_640"]["map50_95"],
         foot=foot(croot, c, ["labC_fp32", "labC_int8"],
                   " · quantization REBUILT this campaign (NNCF MIXED, 150 real "
-                  "train2017 calib images, identity in CACHE_KEY.json)"),
+                  "train2017 calib images, identity in CACHE_KEY.json); "
+                  "export-size bars use ARCHIVED v2.0.0 model-size figures"),
         subtitle=("YOLO26l · OpenVINO · NNCF MIXED PTQ · 150 real COCO "
                   "train2017 calibration images (this campaign's fresh build)"))
 
@@ -96,8 +98,8 @@ def main() -> None:
         {"p50_ms": head["labD_res"]["i512_p50_ms"]},
         maps["pytorch_cuda_640"]["map50_95"],
         maps["pytorch_cuda_512"]["map50_95"],
-        s640.get("derived", {}).get("vram_peak_gb", 0),
-        s512.get("derived", {}).get("vram_peak_gb", 0),
+        s640.get("derived", {}).get("vram_peak_gb"),
+        s512.get("derived", {}).get("vram_peak_gb"),
         s512,
         foot=foot(croot, c, ["labD_res_640", "labD_res_512"],
                   " · scope: e2e per image on W7900"))
@@ -112,6 +114,7 @@ def main() -> None:
         0, 0, load(croot, "labD_b8"),
         foot=foot(croot, c, ["labD_b1", "labD_b8", "labD_b1_e2e", "labD_b8_e2e"],
                   " · forward-only throughput is NOT end-to-end"),
+        e2e_ms=(e1, e8),
         e2e_note=(f"YOLO26l · W7900 · forward-only: {b1:.1f} ms/img (b1) vs "
                   f"{b8:.1f} ms/batch ÷ 8 = {b8/8:.1f} ms/img-equiv (b8) — "
                   f"NOT request latency · end-to-end: {e1:.1f} ms (b1) vs "
