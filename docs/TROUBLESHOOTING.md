@@ -22,6 +22,14 @@ It checks: AMD CPU, gfx1100 GPU, ROCm torch pins, real GPU compute
 - Never "fix" this by installing PyPI torch — the course requires the AMD ROCm
   wheels.
 
+### `libamdhip64.so.7: undefined symbol: hsa_amd_vmem_...` when importing
+
+- Cause: importing `openvino` **before** `torch` loads the system ROCm runtime,
+  which then clashes with the ROCm PyTorch userspace (7.14.1 vs older system
+  ROCR).
+- Fix: always `import torch` first in scripts that use both (all course code
+  and `doctor.sh` already do).
+
 ### GPU compute fails or hangs
 
 - `rocm-smi` to check the GPU is healthy; re-run the smoke test:

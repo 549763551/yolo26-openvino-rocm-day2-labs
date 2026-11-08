@@ -50,6 +50,9 @@ fi
 
 hr "4. OpenVINO / Ultralytics / NNCF"
 "$PY" - <<'EOF'
+# Import torch FIRST: openvino's AMD GPU plugin loads the system ROCm runtime,
+# which must not shadow torch's bundled ROCm userspace libraries.
+import torch  # noqa: F401
 import openvino as ov
 print("openvino    :", ov.__version__, "devices:", ov.Core().available_devices)
 import ultralytics; print("ultralytics:", ultralytics.__version__)
