@@ -90,7 +90,7 @@ def test_save_run_evidence_chain(tmp_path, monkeypatch):
     from course import benchmark as B
     monkeypatch.setattr(B, "RESULTS", tmp_path)
     meta = B.RunMeta(experiment="t_exp", variant="t_var", device="cpu",
-                     runtime="test", warmup=2, iters=5)
+                     runtime="test", model_sha256="0" * 64, warmup=2, iters=5)
     summary = B.save_run(meta, [10.0, 11.0, 12.0, 13.0, 14.0])
     exp_dir = tmp_path / "t_exp"
     jf = exp_dir / f"{summary['run_id']}_summary.json"
@@ -112,7 +112,7 @@ def test_tamper_detected(tmp_path, monkeypatch):
     from course import benchmark as B
     monkeypatch.setattr(B, "RESULTS", tmp_path)
     meta = B.RunMeta(experiment="t2", variant="v", device="cpu",
-                     runtime="test", warmup=1, iters=4)
+                     runtime="test", model_sha256="0" * 64, warmup=1, iters=4)
     s = B.save_run(meta, [1.0, 2.0, 3.0, 4.0])
     problems = []
     VE.verify_dir_sums(tmp_path / "t2", problems)
