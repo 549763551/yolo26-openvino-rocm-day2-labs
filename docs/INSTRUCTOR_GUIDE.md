@@ -14,7 +14,7 @@ discussion). Notebook quick-mode wall times (measured this round):
 
 ---
 
-## Slide 28–32 · Environment & two execution paths — Notebook 00
+## Slides 28–29, 32 · Deployment framing, inference pipeline and benchmark discipline — Notebooks 00–01
 
 **Core knowledge**: before any performance claim, establish (1) hardware
 identity (AMD EPYC 9334 ×2, W7900 gfx1100), (2) software identity (ROCm
@@ -65,8 +65,8 @@ speedup from a 10× faster GPU?" (1.11×.)
 **Core knowledge**: latency (P50/P95), throughput, warm-up; e2e scope
 (pre + infer + post); GPU async timing needs synchronization.
 
-**Measured (campaign c20261108_1108)**: CPU P50 191.3 ms (P95 ~203) vs W7900
-P50 13.5 ms (P95 ~14.2) → **14.14×** end-to-end, same official model, batch 1,
+**Measured (campaign c20261108_1108)**: CPU P50 191.3 ms (**P95 470.6**) vs W7900
+P50 13.5 ms (**P95 15.7**) → **14.14×** end-to-end, same official model, batch 1,
 imgsz 640.
 
 **Teaching points**: this is a **platform comparison** (different hardware),
@@ -81,7 +81,7 @@ cores for convolutions, but fixed CPU work caps it (Amdahl again).
 
 ---
 
-## Slide 34–38 · Same CPU, two runtimes — Notebook 02 (Lab B)
+## Slides 34–38 · OpenVINO AMD CPU export, runtime and Lab B — Notebook 02
 
 **Core knowledge**: an inference runtime = graph optimization + kernel
 selection + threading. Export once (IR), compile per target, then infer.
@@ -115,13 +115,12 @@ dequantization error is unavoidable.
 **Hand example (NB03 §0, run it)**: [0.00, −0.60, 1.20], scale = 1.20/127 →
 int8 [0, −64, 127] → dequant [0, −0.605, 1.20]: tiny errors, 4× smaller.
 
-**Measured**: FP32 98.3 ms / 100 MB / mAP 0.6349 → INT8 78.1 ms / 26 MB /
-mAP 0.5682 = **1.26× faster, 3.8× smaller, ΔmAP −0.0667**. Quantization
+**Measured this campaign**: FP32 98.3 ms / mAP 0.6349 → INT8 78.1 ms /
+mAP 0.5682 = **1.26× faster, ΔmAP −0.0667**. The approx. 100 MB / 26 MB (3.8× smaller) IR sizes are **historical v2.0.0 export measurements**, not remeasured in v2.0.1. Do not present them as new evidence. Quantization
 REBUILT this campaign: 150 real train2017 images, NNCF MIXED, 44 s,
 identity-verified cache.
 
-**The deployment question (mandatory discussion)**: is 1.26× + 3.8× smaller
-worth −0.067 mAP? Answer depends on the business (missed-detection cost vs
+**The deployment question (mandatory discussion)**: is a 1.26× P50 gain worth −0.067 mAP? (Separately, the historical exports were about 3.8× smaller.) Answer depends on the business (missed-detection cost vs
 server cost). There is no universal answer — that IS the lesson.
 
 **Calibration experiment**: `STUDENT_CALIB_N = 30` re-quantizes into a
@@ -132,7 +131,7 @@ on AMD; 1.26× here, could differ elsewhere).
 
 ---
 
-## Slide 43–46 · Resolution trade-off — Notebook 04 (Lab D-A)
+## Slides 45, 48 · Input resolution trade-off and Lab D — Notebook 04 (Lab D-A)
 
 **Core knowledge**: pixels ∝ imgsz²; 640→512 = 36% fewer pixels → less
 compute, but small-object detail is lost.
@@ -147,7 +146,7 @@ explain the gap with the Amdahl/fixed-overhead story from Slide 30.
 
 ---
 
-## Slide 47–48 · Batch & throughput semantics — Notebook 04 (Lab D-B)
+## Slides 46, 48 · Batch & throughput semantics — Notebook 04 (Lab D-B)
 
 **Core knowledge**: batch amortizes per-launch overhead and raises
 utilization; VRAM grows ~linearly with batch × imgsz²; **latency semantics
@@ -175,7 +174,7 @@ per-request latency under burst INCLUDES queue wait.
 **Measured (100-image burst)**: serial 58.6 img/s → pipeline 83.1 img/s =
 **1.42×**; per-detection parity **100/100 images, min IoU 1.0, max Δconf
 0.0** (bit-identical). Serial per-image e2e P50 = 14.0 ms (no queue);
-pipeline burst e2e P50 = 611 ms (queue-inclusive) — **different scopes,
+pipeline burst e2e median-round P50 = 603.5 ms (queue-inclusive) — **different scopes,
 never subtracted**.
 
 **The real timeline (NB05 §5b)**: stage timeline drawn from measured
@@ -202,7 +201,7 @@ stage timelines); "detections identical" without the per-detection check.
 |---|---|---|---|
 | 1 | W7900 vs EPYC 9334 (e2e, same model) | **14.14×** | platform comparison; spread ≤ 7.5% |
 | 2 | OpenVINO vs PyTorch (same CPU) | **2.28×** | mAP parity (−0.0049); one-time compile |
-| 3 | INT8 vs FP32 (same CPU) | **1.26×**, 3.8× smaller | **ΔmAP −0.0667** — NOT lossless |
+| 3 | INT8 vs FP32 (same CPU) | **1.26×** (v2.0.1); ~3.8× smaller (v2.0.0 historical export) | **ΔmAP −0.0667** — NOT lossless |
 | 4 | imgsz 640→512 | −1.3% e2e | mAP −0.024; fixed overhead dominates |
 | 5 | batch 1→8 (forward) | **1.52×** throughput | e2e 13.6 → 80.0 ms/8-img request; ÷8 ≠ latency |
 | 6 | async CPU+GPU pipeline | **1.42×** burst throughput | detections bit-identical; burst queue raises per-request wait |

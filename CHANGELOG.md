@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — v2.0.2 release-evidence accuracy corrections (documentation/QA only)
+
+- Correct published P95 values by recomputing per-round percentiles from the sealed v2.0.1 campaign; original CSVs and campaign hashes remain untouched. In particular Lab A CPU P95 = **470.6 ms**, not 203.1 ms; Lab B PyTorch CPU P95 = **441.0 ms**, not 199.4 ms.
+- Resolve conflict markers and reconcile the exact Slide 28–51 map with the approved teaching outline.
+- Explicitly label FP32/INT8 sizes as historical v2.0.0 exports; v2.0.1 had no freshly captured model-size artifacts. Add a local XML/BIN measurement tool (no GPU needed) for the missing fresh evidence.
+- Correct missing cold-start log reference; disclose that only the audit summary, not the raw installer transcript, is public.
+- Add release-documentation tests driven from original campaign CSVs and wire them into CI. No new W7900 physical benchmark is claimed.
+
+
+
 ## v2.0.1 — 2026-11-08 — Quality re-audit, benchmark revalidation, teaching upgrade
 
 Independent audit pass (R1–R4) over v2.0.0. All six experiments **re-measured

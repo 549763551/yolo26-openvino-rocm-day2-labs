@@ -77,8 +77,8 @@ no longer used for public claims).
 
 | Variant | P50 ms | P95 ms | Throughput img/s |
 |---|---|---|---|
-| AMD EPYC 9334 (PyTorch, 8 threads, 16-CPU affinity) | 191.3 | 203.1 | 5.2 |
-| W7900D (PyTorch ROCm) | 13.5 | 14.2 | 73.9 |
+| AMD EPYC 9334 (PyTorch, 8 threads, 16-CPU affinity) | 191.3 | 470.6 | 5.2 |
+| W7900D (PyTorch ROCm) | 13.5 | 15.7 | 73.9 |
 
 **GPU is 14.14× the CPU** (platform comparison, not a software optimization;
 round spread CPU 7.5% / GPU 5.8%)
@@ -87,8 +87,8 @@ round spread CPU 7.5% / GPU 5.8%)
 
 | Runtime | P50 ms | P95 ms | mAP50-95 |
 |---|---|---|---|
-| PyTorch CPU | 198.5 | 199.4 | 0.6398 |
-| OpenVINO CPU | 87.2 | 99.4 | 0.6349 |
+| PyTorch CPU | 198.5 | 441.0 | 0.6398 |
+| OpenVINO CPU | 87.2 | 93.8 | 0.6349 |
 
 **OpenVINO is 2.28× PyTorch** · ΔmAP −0.0049 (parity) · one-time first compile ~1–2 s
 
@@ -96,10 +96,12 @@ round spread CPU 7.5% / GPU 5.8%)
 
 | Precision | Size MB | P50 ms | mAP50-95 |
 |---|---|---|---|
-| FP32 | 100 | 98.3 | 0.6349 |
-| INT8 | 26 | 78.1 | 0.5682 |
+| FP32 | ~100¹ (archived) | 98.3 | 0.6349 |
+| INT8 | ~26¹ (archived) | 78.1 | 0.5682 |
 
-**1.26× faster · 3.8× smaller · ΔmAP −0.0667 (a real accuracy price — never call it lossless)**
+**1.26× faster (v2.0.1 real-hardware P50) · ΔmAP −0.0667 (a real accuracy price — never call it lossless)**
+
+¹ Approx. 100/26 MB (3.8× smaller) are **historical v2.0.0 physical export sizes**, not measurements newly captured in v2.0.1. Fresh model-size evidence requires re-reading the actual new OpenVINO XML/BIN files.
 
 ### 4 · Lab D-A — resolution (W7900, e2e batch 1)
 
@@ -127,7 +129,7 @@ labeled separately)
 | Mode | Throughput img/s | Per-image e2e P50 (scope) |
 |---|---|---|
 | Serial | 58.6 | 14.0 ms (no queue — pure execution) |
-| Async pipeline | 83.1 | 611 ms (burst submit→result, queue included) |
+| Async pipeline | 83.1 | 603.5 ms (median round P50; burst submit→result, queue included) |
 
 **1.42× throughput** · per-detection parity **100/100 images** (class/box/conf
 compared one-to-one, min IoU = 1.0, max Δconf = 0.0 — bit-identical) · the two
