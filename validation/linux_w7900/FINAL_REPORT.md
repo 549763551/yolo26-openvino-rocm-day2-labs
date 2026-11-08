@@ -9,7 +9,7 @@ OpenVINO 2026.4.1 · NNCF 3.4.0 · Ultralytics 8.4.207
 | Item | Status | Evidence |
 |---|---|---|
 | GitHub URL | PASS | https://github.com/AIwork4me/yolo26-openvino-rocm-day2-labs |
-| HEAD SHA | PASS | `e7b684bef6923a9eb0ebf5861b30a469fb5c3cc6` (verified equal local/remote) |
+| HEAD SHA | PASS | `f904edb` (final HEAD; CI success on e7b684b and f904edb — report added in 933767a, doctor import-order fix in f904edb) |
 | Release | PASS | v2.0.0 — https://github.com/AIwork4me/yolo26-openvino-rocm-day2-labs/releases/tag/v2.0.0 |
 | CI (GitHub Actions) | PASS | `ci` workflow completed · success on HEAD |
 | One-click install `setup.sh` | PASS | re-ran end-to-end; 10/10 steps; ALL HARD GATES PASS (AMD CPU + gfx1100 + ROCm torch + real compute + OpenVINO CPU) |
