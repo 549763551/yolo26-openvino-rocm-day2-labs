@@ -36,6 +36,7 @@ plt.rcParams.update({
     "font.size": 13, "axes.titlesize": 19, "axes.titleweight": "bold",
     "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.8,
     "axes.axisbelow": True, "svg.fonttype": "none",
+    "svg.hashsalt": "yolo26-day2-v201",
 })
 
 
@@ -48,7 +49,8 @@ def _finish(fig, ax, title, subtitle, footnote, name):
     fig.tight_layout(rect=(0, 0.045, 1, 1))
     ASSETS.mkdir(parents=True, exist_ok=True)
     fig.savefig(ASSETS / f"{name}.png", dpi=180, facecolor=BG)
-    fig.savefig(ASSETS / f"{name}.svg", facecolor=BG)
+    fig.savefig(ASSETS / f"{name}.svg", facecolor=BG,
+                metadata={"Date": None})
     plt.close(fig)
     print(f"[chart] {ASSETS / name}.png (+svg)")
 
@@ -191,8 +193,9 @@ def chart_fp32_vs_int8(fp32_sum: dict, int8_sum: dict, size_fp32: float,
         ax.annotate(f"{v:.4f}", (b.get_x() + b.get_width() / 2, v),
                     ha="center", va="bottom", fontsize=13, fontweight="bold")
     ax.set_ylabel("mAP50-95 (val subset)")
-    drop = map_fp32 - map_int8
-    ax.set_title(f"Accuracy · ΔmAP = {drop:+.4f}", fontsize=14)
+    # Signed accuracy delta is INT8 minus FP32: a degradation is negative.
+    delta_map = map_int8 - map_fp32
+    ax.set_title(f"Accuracy · ΔmAP (INT8−FP32) = {delta_map:+.4f}", fontsize=14)
     ax.set_ylim(0, map_fp32 * 1.2)
     _style_axes(ax)
     _finish(fig, axes[0],
@@ -231,7 +234,11 @@ def chart_resolution(imgsz_a: int, imgsz_b: int, lat_a: dict, lat_b: dict,
     ax.set_ylabel("mAP50-95 (val subset)")
     ax.set_xticks(xs)
     ax.set_xticklabels(labels)
-    mem = f"  ·  VRAM: {mem_a:.2f} GB → {mem_b:.2f} GB"
+    # This campaign has no VRAM evidence for resolution: missing != 0.
+    valid_mem = (mem_a is not None and mem_b is not None
+                 and mem_a > 0 and mem_b > 0)
+    mem = (f"  ·  VRAM: {mem_a:.2f} GB → {mem_b:.2f} GB"
+           if valid_mem else "")
     ax.set_title("Accuracy / 精度" + mem, fontsize=15)
     _style_axes(ax)
     _finish(fig, axes[0],
@@ -243,7 +250,8 @@ def chart_resolution(imgsz_a: int, imgsz_b: int, lat_a: dict, lat_b: dict,
 def chart_batch(batch_a: int, batch_b: int, thr_a: float, thr_b: float,
                 lat_note_a: str, lat_note_b: str, mem_a: float, mem_b: float,
                 summary: dict, name="05_batch_vs_throughput",
-                foot: str | None = None, e2e_note: str | None = None):
+                foot: str | None = None, e2e_note: str | None = None,
+                 e2e_ms: tuple[float, float] | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(12.8, 7.2))
     labels = [f"batch {batch_a}", f"batch {batch_b}"]
 
@@ -256,13 +264,24 @@ def chart_batch(batch_a: int, batch_b: int, thr_a: float, thr_b: float,
     _style_axes(ax)
 
     ax = axes[0]
-    bars = ax.bar(labels, [mem_a, mem_b], 0.5, color=[C_GPU, C_OK])
-    _bar_label(ax, bars, fmt="{:.2f}", unit=" GB")
-    ax.set_ylabel("Peak GPU memory / 峰值显存 (GB)")
-    ax.set_title("VRAM / 显存占用", fontsize=15)
+    if (mem_a is not None and mem_b is not None
+            and mem_a > 0 and mem_b > 0):
+        bars = ax.bar(labels, [mem_a, mem_b], 0.5, color=[C_GPU, C_OK])
+        _bar_label(ax, bars, fmt="{:.2f}", unit=" GB")
+        ax.set_ylabel("Peak GPU memory / 峰值显存 (GB)")
+        ax.set_title("VRAM / 显存占用", fontsize=15)
+    elif e2e_ms is not None:
+        bars = ax.bar(labels, list(e2e_ms), 0.5, color=[C_GPU, C_OK])
+        _bar_label(ax, bars, fmt="{:.1f}", unit=" ms")
+        ax.set_ylabel("E2E completion time / 完成耗时 (ms)")
+        ax.set_title("Batch end-to-end completion time", fontsize=15)
+    else:
+        ax.axis("off")
+        ax.text(0.5, 0.5, "VRAM: NOT MEASURED in this campaign",
+                color=MUTED, ha="center", va="center", transform=ax.transAxes)
     _style_axes(ax)
     _finish(fig, axes[0],
-            "Lab D-B · Batch size vs throughput & memory / Batch 与吞吐、显存",
+            "Lab D-B · Batch throughput and completion time / 吞吐与完成时间",
             (e2e_note or
              f"YOLO26l · W7900 · imgsz 640 · per-request latency NOT divided "
              f"by batch: {lat_note_a} → {lat_note_b}"),
@@ -293,13 +312,12 @@ def chart_pipeline(serial: dict, pipeline: dict,
     b1 = ax.bar(xs, inf, 0.5, color=C_GPU, label="GPU infer / GPU 推理")
     b2 = ax.bar(xs, pre, 0.5, bottom=inf, color=C_CPU,
                 label="CPU load+preprocess / CPU 读取+预处理")
-    for i in xs:
-        ax.annotate(f"e2e p50 {serial['e2e_p50_ms']:.0f} ms\n(no queue)",
-                    (0, inf[0] + pre[0]), ha="center", va="bottom",
-                    fontsize=11, color=MUTED)
-        ax.annotate(f"e2e p50 {pipeline['e2e_p50_ms']:.0f} ms\n(burst: incl. queue wait)",
-                    (1, inf[1] + pre[1]), ha="center", va="bottom",
-                    fontsize=11, color=MUTED)
+    ax.annotate(f"e2e p50 {serial['e2e_p50_ms']:.0f} ms\n(no queue)",
+                (0, inf[0] + pre[0]), ha="center", va="bottom",
+                fontsize=11, color=MUTED)
+    ax.annotate(f"e2e p50 {pipeline['e2e_p50_ms']:.0f} ms\n(burst: incl. queue wait)",
+                (1, inf[1] + pre[1]), ha="center", va="bottom",
+                fontsize=11, color=MUTED)
     ax.set_xticks(xs)
     ax.set_xticklabels(["Serial / 串行", "Pipeline / 流水线"])
     ax.set_ylabel("P50 per-image breakdown / 单张耗时分解 (ms)")
