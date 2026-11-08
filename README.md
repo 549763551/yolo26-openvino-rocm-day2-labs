@@ -53,58 +53,24 @@ source .venv/bin/activate && jupyter lab  # 打开六份 Notebook
 - 云主机恢复 `bash scripts/restore_env.sh`
 - 测试 `python -m pytest -q`
 
-## 实测结果（真机）/ Measured results (real machine)
+## 实测结果（v2.0.1 · 2026-11-08）
 
-### Six measured results / 六组实测结果
+本分支最新数据来自 **[v2.0.1 真机 Campaign](validation/v2.0.1/campaigns/c20261108_1108/CAMPAIGN.json)**，3 轮独立测试、每组 50 次正式计时，统计采用各轮 P50 的中位数。旧的 `results/latest.json` 保存的是 **v2.0.0 历史数据，不是新版展示数据**。
 
-profile: **full** · generated: 2026-11-08T09:56:56 · model: official yolo26l.pt (80-class COCO detection)
+| Lab | 优化对比 | v2.0.1 实测 | 代价与边界 |
+|---|---|---:|---|
+| A | EPYC CPU → W7900 ROCm GPU | **14.14×**（P50 191.28→13.53ms） | 硬件平台对比，单张端到端 |
+| B | PyTorch CPU → OpenVINO CPU | **2.28×**（198.54→87.22ms） | 同一 AMD CPU，mAP −0.0049 |
+| C | OpenVINO FP32 → INT8 | **1.26×**（98.30→78.14ms） | **mAP −0.0667**，精度不能忽略 |
+| D-A | imgsz 640 → 512 | **约 1.3%** P50 降低（13.68→13.50ms） | mAP −0.0239；P95 反而变差 |
+| D-B | Forward-only Batch 1 → 8 | **1.52×** 吞吐（95.2→144.9 img/s） | Batch 完成时间≠单请求延迟 |
+| E | CPU+GPU 串行 → 异步流水线 | **1.42×** 吞吐（58.62→83.13 img/s） | 突发请求含排队，P50≈611ms |
 
-All values measured on this machine (2× AMD EPYC 9334 + Radeon PRO W7900, ROCm PyTorch 2.12.0+rocm7.14.1). Raw samples: `results/raw/`.
+**注意**：机器为 2× AMD EPYC 9334 + W7900D（gfx1100），但容器 CPU 配额只有 16 核。精度评估使用 120 张图片的教学 COCO 子集，不是官方完整 COCO Benchmark。本轮 Resolution/Batch 未记录可信显存数据，不得将缺失视为 0 GB。模型导出文件大小（≈100/26 MB）如显示，须明确为 v2.0.0 的历史参考值。
 
-| Lab | Device | P50 ms | P95 ms | Throughput img/s |
-|---|---|---|---|---|
-| A baseline | AMD CPU (PyTorch) | 124.8 | 160.0 | 8.0 |
-| A baseline | W7900 (PyTorch ROCm) | 13.3 | 26.1 | 75.3 |
-
-GPU vs CPU P50 speedup: **9.40x**
-
-| Lab | Runtime (same AMD CPU) | P50 ms | P95 ms | mAP50-95 |
-|---|---|---|---|---|
-| B runtime | PyTorch | 154.6 | 183.6 | 0.6398 |
-| B runtime | OpenVINO | 50.1 | 75.4 | 0.6349 |
-
-OpenVINO vs PyTorch P50: **3.09x** · ΔmAP: -0.0049
-
-| Lab | Precision | Size MB | P50 ms | mAP50-95 |
-|---|---|---|---|---|
-| C quant | FP32 | 100 | 49.5 | 0.6349 |
-| C quant | INT8 | 26 | 28.2 | 0.5682 |
-
-INT8 vs FP32 P50: **1.75x** · size 3.79x smaller · ΔmAP: -0.0667
-
-| Lab | Config | P50 ms | mAP50-95 | VRAM GB |
-|---|---|---|---|---|
-| D-A resolution | imgsz 640 | 13.2 | 0.6398 | 0.36 |
-| D-A resolution | imgsz 512 | 12.5 | 0.6159 | 0.33 |
-
-640→512 latency: **1.06x faster** · ΔmAP: -0.0239
-
-| Lab | Batch | Throughput img/s | Latency semantics |
-|---|---|---|---|
-| D-B batch | 1 | 97.9 | per-request 10.2 ms |
-| D-B batch | 8 | 145.6 | batch 54.9 ms (equiv 6.9 ms/img, NOT request latency) |
-
-Batch throughput gain: **1.49x** · VRAM peak 1.17 GB
-
-| Lab | Mode | Total s | img/s | e2e P50 ms |
-|---|---|---|---|---|
-| E pipeline | serial | 1.4 | 72.3 | 13 |
-| E pipeline | async CPU+GPU | 1.1 | 87.4 | 579 |
-
-Pipeline throughput gain: **1.21x** · detection consistency: PASS (100 images)
-
-*数据来源：`results/latest.json` + `results/raw/`（每次运行保存逐次延迟样本 CSV 与
-SHA256）。图表位于 `assets/slides/`，全部由原始数据生成，可复现。*
+- [完整 v2.0.1 结果表](results/RESULTS_TABLE.md)
+- [Slide 28–51 数据与教学映射](docs/SLIDE_28_51_EVIDENCE_MAP.md)
+- [独立审计：53 次运行记录、96 个文件哈希](validation/v2.0.1/campaigns/c20261108_1108/AUDIT_REPORT.md)
 
 ## 教学主线 / Teaching arc
 

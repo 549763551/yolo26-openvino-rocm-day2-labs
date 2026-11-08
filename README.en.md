@@ -46,59 +46,24 @@ source .venv/bin/activate && jupyter lab  # open the six notebooks
 Diagnostics: `bash scripts/doctor.sh` · restore on cloud VMs:
 `bash scripts/restore_env.sh` · tests: `python -m pytest -q`.
 
-## Measured results
+## Measured results (v2.0.1 · 2026-11-08)
 
-### Six measured results / 六组实测结果
+The authoritative measurements for this branch are in the **[v2.0.1 physical-hardware campaign](validation/v2.0.1/campaigns/c20261108_1108/CAMPAIGN.json)**: three independent rounds, 50 timed iterations per latency variant, median of each round's P50. The older `results/latest.json` is a **v2.0.0 historical snapshot**, not the current slide data.
 
-profile: **full** · generated: 2026-11-08T09:56:56 · model: official yolo26l.pt (80-class COCO detection)
+| Lab | Comparison | v2.0.1 measurement | Accuracy/latency caveat |
+|---|---|---:|---|
+| A | EPYC CPU → W7900 ROCm GPU | **14.14×** (P50 191.28→13.53ms) | Hardware comparison, per-image E2E |
+| B | PyTorch CPU → OpenVINO CPU | **2.28×** (198.54→87.22ms) | Same AMD CPU, mAP −0.0049 |
+| C | OpenVINO FP32 → INT8 | **1.26×** (98.30→78.14ms) | **mAP −0.0667** |
+| D-A | Input 640 → 512 | **≈1.3%** lower P50 (13.68→13.50ms) | mAP −0.0239; P95 worsens |
+| D-B | Batch 1 → 8, forward-only | **1.52×** throughput (95.2→144.9 img/s) | Batch completion time is NOT request latency |
+| E | Serial → async CPU+GPU | **1.42×** throughput (58.62→83.13 img/s) | Burst queue-inclusive P50 ≈611ms |
 
-All values measured on this machine (2× AMD EPYC 9334 + Radeon PRO W7900, ROCm PyTorch 2.12.0+rocm7.14.1). Raw samples: `results/raw/`.
+**Scope:** 2× AMD EPYC 9334 + Radeon PRO W7900D (gfx1100), with a **16-core cgroup CPU quota**; accuracy on a 120-image educational COCO subset (not official COCO). Resolution/batch VRAM not measured in v2.0.1; missing is not zero. Archived 100/26MB FP32/INT8 export sizes are from v2.0.0, if referenced.
 
-| Lab | Device | P50 ms | P95 ms | Throughput img/s |
-|---|---|---|---|---|
-| A baseline | AMD CPU (PyTorch) | 124.8 | 160.0 | 8.0 |
-| A baseline | W7900 (PyTorch ROCm) | 13.3 | 26.1 | 75.3 |
-
-GPU vs CPU P50 speedup: **9.40x**
-
-| Lab | Runtime (same AMD CPU) | P50 ms | P95 ms | mAP50-95 |
-|---|---|---|---|---|
-| B runtime | PyTorch | 154.6 | 183.6 | 0.6398 |
-| B runtime | OpenVINO | 50.1 | 75.4 | 0.6349 |
-
-OpenVINO vs PyTorch P50: **3.09x** · ΔmAP: -0.0049
-
-| Lab | Precision | Size MB | P50 ms | mAP50-95 |
-|---|---|---|---|---|
-| C quant | FP32 | 100 | 49.5 | 0.6349 |
-| C quant | INT8 | 26 | 28.2 | 0.5682 |
-
-INT8 vs FP32 P50: **1.75x** · size 3.79x smaller · ΔmAP: -0.0667
-
-| Lab | Config | P50 ms | mAP50-95 | VRAM GB |
-|---|---|---|---|---|
-| D-A resolution | imgsz 640 | 13.2 | 0.6398 | 0.36 |
-| D-A resolution | imgsz 512 | 12.5 | 0.6159 | 0.33 |
-
-640→512 latency: **1.06x faster** · ΔmAP: -0.0239
-
-| Lab | Batch | Throughput img/s | Latency semantics |
-|---|---|---|---|
-| D-B batch | 1 | 97.9 | per-request 10.2 ms |
-| D-B batch | 8 | 145.6 | batch 54.9 ms (equiv 6.9 ms/img, NOT request latency) |
-
-Batch throughput gain: **1.49x** · VRAM peak 1.17 GB
-
-| Lab | Mode | Total s | img/s | e2e P50 ms |
-|---|---|---|---|---|
-| E pipeline | serial | 1.4 | 72.3 | 13 |
-| E pipeline | async CPU+GPU | 1.1 | 87.4 | 579 |
-
-Pipeline throughput gain: **1.21x** · detection consistency: PASS (100 images)
-
-*Source: `results/latest.json` + `results/raw/` (per-iteration latency CSV with
-SHA256 evidence chains). Charts in `assets/slides/` are regenerated from raw
-data by `course/charts.py`.*
+- [Full v2.0.1 results table](results/RESULTS_TABLE.md)
+- [Slide 28–51 evidence mapping](docs/SLIDE_28_51_EVIDENCE_MAP.md)
+- [Independent campaign audit: 53 runs, 96 checksums](validation/v2.0.1/campaigns/c20261108_1108/AUDIT_REPORT.md)
 
 ## Teaching arc
 
