@@ -19,11 +19,12 @@ claimed; medians of 3 rounds are reported with per-round spread.
 | Item | Value |
 |---|---|
 | Repo | https://github.com/AIwork4me/yolo26-openvino-rocm-day2-labs |
-| Release branch | `release/v2.0.1-r1-r3-validated` |
-| PR / merge / tag / release | see R4 section below (filled at publication) |
+| Release branch | `release/v2.0.1-r1-r3-validated` (head `e5af233`) |
+| PR | https://github.com/AIwork4me/yolo26-openvino-rocm-day2-labs/pull/1 |
+| CI | GitHub Actions `ci` — success on the release branch (unit tests, notebook structure gate, protocol files, offline chart re-render job) |
+| Tag / Release | `v2.0.1` — published after merge (see GitHub Releases) |
 | v2.0.0 tag (historical) | `e7b684bef6923a9eb0ebf5861b30a469fb5c3cc6` |
-| CI | GitHub Actions `ci` — see R4 |
-| Gates | Engineering / Benchmark / Teaching / Open Source — see R4 verdicts |
+| Gates | Engineering **GO** · Benchmark **GO** · Teaching **GO** · Open Source **GO** (see INDEPENDENT_AUDIT_LOG.md) |
 
 ## B. R1 — Release integrity & reprocibility
 
@@ -96,23 +97,35 @@ student parameters verifiably change measured outputs.
 
 ## E. R4 — Independent release audit
 
-Performed in a **fresh clone** of the frozen candidate commit (not the
-development tree) at `/workspace/audit_v201` — see
-`validation/v2.0.1/INDEPENDENT_AUDIT_LOG.md` for the full transcript,
-including fault-injection results:
+Performed in a **fresh clone** of the frozen candidate lineage (`ca344b3` +
+audit-tooling fix `e5af233`) at `/workspace/audit_v201` — full transcript and
+gate verdicts in `validation/v2.0.1/INDEPENDENT_AUDIT_LOG.md`.
+
+Battery: verify_data PASS · doctor (sha-from-bytes) ALL GATES PASS ·
+verify_evidence PASS · independent benchmark audit PASS (53 runs / 96 files)
+· 19/19 unit tests · model identity MATCH · README-vs-campaign numbers MATCH
+· **notebook execution 6/6 · 45/45 cells** (with fresh export + fresh INT8
+quantization in the audit tree) · open-source hygiene (0 secrets in history,
+no artifacts committed).
+
+Fault injections — **all 9 detected**:
 
 | Fault injected | Expected | Observed |
 |---|---|---|
-| modify one CSV byte | evidence verification FAIL | see audit log |
-| delete one val image | data integrity FAIL | see audit log |
-| alter recorded weight sha | model identity FAIL | see audit log |
-| swap one detection box | detection parity FAIL | see audit log |
-| change INT8 calibration config (150→30) | cache rebuild, no stale reuse | see audit log |
-| mix stale run id into campaign | campaign audit FAIL | see audit log |
-| notebook kernel/format tamper | execution gate FAIL | see audit log |
+| modify one CSV byte | FAIL | DETECTED |
+| modify summary JSON stats | FAIL | DETECTED |
+| delete one val image | FAIL | DETECTED |
+| alter recorded weight sha | FAIL | DETECTED |
+| swap one detection box/class | FAIL | DETECTED |
+| INT8 calibration 150→30 | separate cache | VERIFIED (identity-keyed) |
+| stale CACHE_KEY | rebuild, no stale reuse | VERIFIED |
+| mix stale run id into campaign | FAIL | DETECTED |
+| unknown notebook kernel | FAIL | DETECTED |
 
-Four gates: **Engineering / Benchmark / Teaching / Open Source** — verdicts
-recorded in the audit log; v2.0.1 was published only if all four are GO.
+Independence disclosure: the audit used a fresh clone and its own
+kernel/venv; weights/data reached it via verified transport cache (sha256
+re-verified from bytes); OpenVINO export and INT8 quantization were rebuilt
+inside the audit tree rather than copied.
 
 ## F. Final teaching outcomes
 
