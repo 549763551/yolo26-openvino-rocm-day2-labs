@@ -1,130 +1,175 @@
 # YOLO26 Day 02 — AI Inference Acceleration: OpenVINO × AMD ROCm
 
 A hands-on senior-undergraduate course: **one official YOLO26l model, two AMD
-compute devices (2× EPYC 9334 CPU + Radeon PRO W7900 48 GB), six bilingual
-notebooks, six real measured experiments.** Every number in this repository
-comes from raw per-iteration CSV samples you can audit (`results/raw/`) —
-nothing is hand-typed, nothing is fabricated.
+compute devices (EPYC CPU + Radeon PRO W7900), six bilingual notebooks, six
+real measured experiments — with independently auditable evidence.**
 
-## Machine & software
+No fabricated numbers anywhere: every figure traces to immutable
+per-iteration CSV samples covered by SHA256SUMS and re-computed by an
+independent audit script.
+
+---
+
+## Machine & software (v2.0.1 measurement machine)
 
 | | |
 |---|---|
-| CPU | 2× AMD EPYC 9334 (Zen 4, 64C/128T, AVX-512, no AMX) |
-| GPU | AMD Radeon PRO W7900 48 GB (gfx1100, RDNA3) |
-| PyTorch | `2.12.0+rocm7.14.1` (AMD ROCm wheels from repo.amd.com) |
-| OpenVINO | CPU plugin (oneDNN). Note: OpenVINO's official validation on AMD CPUs is limited — everything here is measured on this actual machine |
-| Model | official Ultralytics `yolo26l.pt` (80-class COCO detection; SHA256 in `weights/model_identity.json`) |
+| CPU | 2× AMD EPYC 9334 (Zen 4, 64C/128T, 2 NUMA nodes, AVX-512 + VNNI, **no Intel AMX**); container CPU quota 16 cores (reported separately from physical topology) |
+| GPU | AMD Radeon PRO W7900D 48 GB (gfx1100, RDNA3); shared host (load recorded) |
+| PyTorch | `2.12.0+rocm7.14.1` (AMD ROCm wheel from `repo.amd.com`, version-pinned) |
+| OpenVINO | 2026.4.1 CPU plugin (oneDNN) — official validation on AMD CPUs is limited; this repository relies on real-machine measurement |
+| Ultralytics | official `yolo26l.pt` (80-class COCO detection, sha256 `9fe3c544…db26`, see `weights/model_identity.json`) |
 
 ## The six labs
 
 | # | Notebook | Question |
 |---|---|---|
-| 00 | [AMD environment & official YOLO26l](notebooks/00_AMD_Environment_and_YOLO26l.ipynb) | Which device is the model really running on? |
-| A | [Lab A: CPU vs GPU baseline](notebooks/01_Lab_A_CPU_vs_GPU_Baseline.ipynb) | Same model — which device wins? |
+| 00 | [AMD environment & official YOLO26l](notebooks/00_AMD_Environment_and_YOLO26l.ipynb) | Which device & runtime path is it really running on? |
+| A | [Lab A: CPU vs GPU baseline](notebooks/01_Lab_A_CPU_vs_GPU_Baseline.ipynb) | Same model — which device wins? Where is the fixed overhead (Amdahl)? |
 | B | [Lab B: OpenVINO on the AMD CPU](notebooks/02_Lab_B_OpenVINO_AMD_CPU.ipynb) | Same CPU, different runtime — what changes? |
-| C | [Lab C: INT8 quantization](notebooks/03_Lab_C_OpenVINO_INT8.ipynb) | Fewer bits, faster math? |
-| D | [Lab D: ROCm GPU optimization](notebooks/04_Lab_D_ROCm_GPU_Optimization.ipynb) | How do resolution & batch move GPU speed? |
-| E | [Lab E: CPU+GPU async pipeline](notebooks/05_Lab_E_AMD_CPU_GPU_Pipeline.ipynb) | Can heterogeneous overlap beat serial? |
+| C | [Lab C: INT8 quantization](notebooks/03_Lab_C_OpenVINO_INT8.ipynb) | Fewer bits, faster math? At what cost? |
+| D | [Lab D: ROCm GPU optimization](notebooks/04_Lab_D_ROCm_GPU_Optimization.ipynb) | Resolution & batch effects on the W7900 |
+| E | [Lab E: CPU+GPU async pipeline](notebooks/05_Lab_E_AMD_CPU_GPU_Pipeline.ipynb) | Can CPU+GPU overlap beat serial — and how is overlap proven? |
 
-Each notebook: 8–12 core cells following the same template — learn → key idea
-→ baseline → change ONE thing → compare real numbers → why → try it yourself
-(students modify a parameter) → takeaway. All explanations are bilingual
-(English / 中文).
+Every notebook follows one bilingual template: **learning objective → key
+idea → predict → run baseline → change ONE thing → compare real data → why →
+try it yourself → common mistakes → takeaway**.
 
 ## Quick start
 
 ```bash
 git clone https://github.com/AIwork4me/yolo26-openvino-rocm-day2-labs.git
 cd yolo26-openvino-rocm-day2-labs
-bash scripts/setup.sh                     # one-click install + self-test
-bash scripts/run_all.sh --profile quick   # fast in-class measurements
-bash scripts/run_all.sh --profile full    # formal citable benchmark
-source .venv/bin/activate && jupyter lab  # open the six notebooks
+bash scripts/setup.sh                        # one-click install (hardware gates + ROCm torch + data verify/repair + self-checks)
+bash scripts/doctor.sh                       # read-only environment diagnostic
+bash scripts/run_all.sh --profile quick      # fast in-class measurements
+bash scripts/run_all.sh --profile full       # formal benchmark
+source .venv/bin/activate && jupyter lab     # open the six notebooks
 ```
 
-Diagnostics: `bash scripts/doctor.sh` · restore on cloud VMs:
-`bash scripts/restore_env.sh` · tests: `python -m pytest -q`.
+Notebook execution gate (really RUNS all six notebooks, not just structure):
 
-## Measured results
+```bash
+bash scripts/validate_notebooks.sh             # structure check (CI)
+bash scripts/validate_notebooks.sh --execute   # real execution 6/6 + output verification
+```
 
-### Six measured results / 六组实测结果
+Evidence verification (anyone can re-audit independently):
 
-profile: **full** · generated: 2026-11-08T09:56:56 · model: official yolo26l.pt (80-class COCO detection)
+```bash
+python scripts/verify_evidence.py --campaign validation/v2.0.1
+python scripts/audit_benchmarks.py --campaign validation/v2.0.1/campaigns/<id>
+```
 
-All values measured on this machine (2× AMD EPYC 9334 + Radeon PRO W7900, ROCm PyTorch 2.12.0+rocm7.14.1). Raw samples: `results/raw/`.
+## Measured results (v2.0.1, re-measured on real hardware)
 
-| Lab | Device | P50 ms | P95 ms | Throughput img/s |
-|---|---|---|---|---|
-| A baseline | AMD CPU (PyTorch) | 124.8 | 160.0 | 8.0 |
-| A baseline | W7900 (PyTorch ROCm) | 13.3 | 26.1 | 75.3 |
+**Campaign `c20261108_1108`** (2026-11-08 · 3 independent rounds × 50 formal
+samples per variant · warm-up 10 excluded · median of round P50s · model
+sha256 `9fe3c544…db26` · AMD EPYC 9334 + W7900D · shared host with load and
+cgroup-throttle counters recorded). Full evidence:
+`validation/v2.0.1/campaigns/c20261108_1108/` (CSVs + summaries + SHA256SUMS
++ independent `AUDIT_REPORT.md`).
 
-GPU vs CPU P50 speedup: **9.40x**
+v2.0.0 historical data remains archived under `results/raw/` (reference only,
+no longer used for public claims).
 
-| Lab | Runtime (same AMD CPU) | P50 ms | P95 ms | mAP50-95 |
-|---|---|---|---|---|
-| B runtime | PyTorch | 154.6 | 183.6 | 0.6398 |
-| B runtime | OpenVINO | 50.1 | 75.4 | 0.6349 |
+### 1 · Lab A — CPU vs GPU (end-to-end, same official model, batch 1)
 
-OpenVINO vs PyTorch P50: **3.09x** · ΔmAP: -0.0049
-
-| Lab | Precision | Size MB | P50 ms | mAP50-95 |
-|---|---|---|---|---|
-| C quant | FP32 | 100 | 49.5 | 0.6349 |
-| C quant | INT8 | 26 | 28.2 | 0.5682 |
-
-INT8 vs FP32 P50: **1.75x** · size 3.79x smaller · ΔmAP: -0.0667
-
-| Lab | Config | P50 ms | mAP50-95 | VRAM GB |
-|---|---|---|---|---|
-| D-A resolution | imgsz 640 | 13.2 | 0.6398 | 0.36 |
-| D-A resolution | imgsz 512 | 12.5 | 0.6159 | 0.33 |
-
-640→512 latency: **1.06x faster** · ΔmAP: -0.0239
-
-| Lab | Batch | Throughput img/s | Latency semantics |
+| Variant | P50 ms | P95 ms | Throughput img/s |
 |---|---|---|---|
-| D-B batch | 1 | 97.9 | per-request 10.2 ms |
-| D-B batch | 8 | 145.6 | batch 54.9 ms (equiv 6.9 ms/img, NOT request latency) |
+| AMD EPYC 9334 (PyTorch, 8 threads, 16-CPU affinity) | 191.3 | 203.1 | 5.2 |
+| W7900D (PyTorch ROCm) | 13.5 | 14.2 | 73.9 |
 
-Batch throughput gain: **1.49x** · VRAM peak 1.17 GB
+**GPU is 14.14× the CPU** (platform comparison, not a software optimization;
+round spread CPU 7.5% / GPU 5.8%)
 
-| Lab | Mode | Total s | img/s | e2e P50 ms |
-|---|---|---|---|---|
-| E pipeline | serial | 1.4 | 72.3 | 13 |
-| E pipeline | async CPU+GPU | 1.1 | 87.4 | 579 |
+### 2 · Lab B — same CPU, two runtimes
 
-Pipeline throughput gain: **1.21x** · detection consistency: PASS (100 images)
+| Runtime | P50 ms | P95 ms | mAP50-95 |
+|---|---|---|---|
+| PyTorch CPU | 198.5 | 199.4 | 0.6398 |
+| OpenVINO CPU | 87.2 | 99.4 | 0.6349 |
 
-*Source: `results/latest.json` + `results/raw/` (per-iteration latency CSV with
-SHA256 evidence chains). Charts in `assets/slides/` are regenerated from raw
-data by `course/charts.py`.*
+**OpenVINO is 2.28× PyTorch** · ΔmAP −0.0049 (parity) · one-time first compile ~1–2 s
+
+### 3 · Lab C — INT8 quantization (NNCF MIXED, 150 real train2017 calibration images, rebuilt fresh this round)
+
+| Precision | Size MB | P50 ms | mAP50-95 |
+|---|---|---|---|
+| FP32 | 100 | 98.3 | 0.6349 |
+| INT8 | 26 | 78.1 | 0.5682 |
+
+**1.26× faster · 3.8× smaller · ΔmAP −0.0667 (a real accuracy price — never call it lossless)**
+
+### 4 · Lab D-A — resolution (W7900, e2e batch 1)
+
+| imgsz | P50 ms | mAP50-95 |
+|---|---|---|
+| 640 | 13.68 | 0.6398 |
+| 512 | 13.50 | 0.6159 |
+
+Only **−1.3%** end-to-end at batch 1 (fixed pre/post dominates e2e;
+forward-only scales more) · ΔmAP −0.024 — a real speed–accuracy trade-off
+
+### 5 · Lab D-B — batch (W7900, imgsz 640)
+
+| Batch | Forward throughput img/s | Latency semantics |
+|---|---|---|
+| 1 | 95.2 | forward 10.5 ms/req; e2e 13.6 ms/req |
+| 8 | 144.9 | forward 55.2 ms/batch; e2e 80.0 ms per 8-image request |
+
+**1.52× forward throughput** · 55.2÷8 = 6.9 ms is an equivalent per-image
+compute cost, **not any user's request latency** (both scopes measured and
+labeled separately)
+
+### 6 · Lab E — CPU+GPU async pipeline (100-image burst)
+
+| Mode | Throughput img/s | Per-image e2e P50 (scope) |
+|---|---|---|
+| Serial | 58.6 | 14.0 ms (no queue — pure execution) |
+| Async pipeline | 83.1 | 611 ms (burst submit→result, queue included) |
+
+**1.42× throughput** · per-detection parity **100/100 images** (class/box/conf
+compared one-to-one, min IoU = 1.0, max Δconf = 0.0 — bit-identical) · the two
+latency scopes are reported separately and never subtracted; overlap is proven
+by measured stage timelines (Notebook 05 §5b)
+
+*Sources: `validation/v2.0.1/campaigns/c20261108_1108/` (run ids + per-sample
+CSVs + SHA256SUMS + `CAMPAIGN.json` + audit report). Charts in `assets/slides/`
+are regenerated from this campaign.*
 
 ## Teaching arc
 
 1. **Less compute** — input resolution (Lab D-A), INT8 quantization (Lab C)
-2. **Faster compute** — OpenVINO on the AMD CPU (Lab B), ROCm W7900 (Labs A, D)
-3. **Parallel compute** — batching (Lab D-B), async CPU/GPU pipeline (Lab E)
+2. **Faster compute** — OpenVINO on AMD CPU (Lab B), ROCm W7900 (Labs A, D)
+3. **Parallel compute** — batching (Lab D-B), async CPU+GPU pipeline (Lab E)
 
-Final exam question of the day: *why faster, how much faster, at what cost,
-and how do you prove it?*
+Final goal: students can answer **"why faster · how much · at what cost · how
+proven"**.
 
 ## Honesty rules
 
-- Only the official `yolo26l.pt` — never a smaller model for better numbers.
-- "No speedup" or "slower" are valid results and are explained, not hidden.
-- Quantization/resolution/batch experiments always report the accuracy or
-  resource cost alongside the speedup.
+- Only the official `yolo26l.pt` (never a smaller model for nicer numbers).
+- "No speedup" or "slower" results are reported and explained (we report what
+  we measure).
+- Quantization/resolution/batch labs always report the accuracy or resource
+  price alongside the speed gain.
 - COCO data is an educational subset (*Educational COCO Subset — Not Official
-  COCO Benchmark*); manifest with ids/SHA256/licenses: `data/manifest.json`.
+  COCO Benchmark*); manifest + SHA256 in `data/manifest.json`.
+- Benchmarks run on a shared host: per-round load and cgroup throttle counters
+  are archived with the evidence (CPU runs pinned to 16 quiet CPUs matching
+  the 16-core quota).
 
 ## Docs
 
-- [Student guide](docs/STUDENT_GUIDE.md) · [Instructor guide](docs/INSTRUCTOR_GUIDE.md)
-- [Benchmark protocol](docs/BENCHMARK_PROTOCOL.md) · [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Slide 28–51 evidence map](docs/SLIDE_28_51_EVIDENCE_MAP.md) · [Data licenses](docs/DATA_LICENSES.md)
+- [Student Guide](docs/STUDENT_GUIDE.md) · [Instructor Guide](docs/INSTRUCTOR_GUIDE.md)
+- [Benchmark Protocol](docs/BENCHMARK_PROTOCOL.md) · [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Slide 28–51 Evidence Map](docs/SLIDE_28_51_EVIDENCE_MAP.md) · [Data Licenses](docs/DATA_LICENSES.md)
+- v2.0.1 validation: `validation/v2.0.1/` (baseline audit / CPU-bimodal
+  diagnosis / campaign evidence / FINAL_REPORT.md)
 
 ## License
 
-MIT (code & docs). Weights (Ultralytics, AGPL-3.0 package) and COCO images
-(original Flickr licenses) are downloaded at setup time, never committed.
+MIT (code & docs). Weights are downloaded at setup time from Ultralytics
+(AGPL-3.0 package); COCO images are downloaded at setup time under their
+original Flickr licenses (see `docs/DATA_LICENSES.md`). Neither is committed.

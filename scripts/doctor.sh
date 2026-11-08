@@ -59,31 +59,26 @@ import ultralytics; print("ultralytics:", ultralytics.__version__)
 import nncf; print("nncf        :", nncf.__version__)
 EOF
 
-hr "5. Official YOLO26l identity"
+hr "5. Official YOLO26l identity (sha recomputed from bytes)"
 "$PY" - <<'EOF'
-import json, sys
+import hashlib, json, sys
 sys.path.insert(0, ".")
 from course.model import identity_record, OFFICIAL_PT
 r = identity_record()
+actual = hashlib.sha256(OFFICIAL_PT.read_bytes()).hexdigest()
 print("file        :", r["file"])
 print("size        :", f"{r['size_bytes']/1e6:.1f} MB")
-print("sha256      :", r["sha256"])
-print("classes     :", r["verified"]["num_classes"], "task:", r["verified"]["task"])
+print("sha256 file :", actual)
+print("sha256 rec  :", r["sha256"])
+assert actual == r["sha256"], (
+    f"WEIGHT IDENTITY MISMATCH: bytes={actual[:16]} recorded={r['sha256'][:16]} "
+    "— weights changed after identity was recorded!")
 assert r["verified"]["num_classes"] == 80 and r["verified"]["task"] == "detect"
-print("identity    : OK — official YOLO26l COCO detection, 80 classes")
+print("identity    : OK — official YOLO26l COCO detection, 80 classes, sha matches bytes")
 EOF
 
-hr "6. Data subsets"
-"$PY" - <<'EOF'
-import json
-from pathlib import Path
-m = json.loads(Path("data/manifest.json").read_text())
-nv = len(m["val_images"]); nc = len(m["calib_images"])
-print(f"val images  : {nv}   calib images: {nc}   overlap: {m['overlap']}")
-print(f"val boxes   : {m['val_boxes_total']}")
-assert nv >= 100 and nc >= 100, "subsets too small"
-print("data        : OK (Educational COCO Subset — Not Official COCO Benchmark)")
-EOF
+hr "6. Data subsets (REAL file verification, v2.0.1)"
+"$PY" scripts/verify_data.py
 
 hr "7. Exports / results"
 ls -la weights/ 2>/dev/null | grep -E "yolo26l|int8|openvino" || echo "(no exports yet)"

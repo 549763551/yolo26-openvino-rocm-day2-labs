@@ -1,0 +1,43 @@
+{
+  "run_id": "labB_runtime_cpu_openvino_cpu_20261108_112756",
+  "meta": {
+    "experiment": "labB_runtime_cpu",
+    "variant": "openvino_cpu",
+    "device": "cpu",
+    "runtime": "openvino-cpu",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 3,
+    "iters": 10,
+    "num_images": 0,
+    "notes": "",
+    "extra": {
+      "first_load_and_compile_s": 0.43
+    },
+    "timestamp": "2026-11-08T11:27:56",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 10,
+    "mean_ms": 50.19294261932373,
+    "p50_ms": 49.06501865386963,
+    "p95_ms": 75.96397314071655,
+    "min_ms": 26.08224105834961,
+    "max_ms": 76.73310279846191
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "results/raw/labB_runtime_cpu/labB_runtime_cpu_openvino_cpu_20261108_112756.csv",
+    "csv_sha256": "bb3935c97b973daeb4516da5f3a73183c5625c2300b17631aab116d3f1d5f7a7"
+  }
+}

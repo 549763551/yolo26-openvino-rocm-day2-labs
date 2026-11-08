@@ -1,0 +1,45 @@
+{
+  "run_id": "labE_pipeline_serial_20261108_111253",
+  "meta": {
+    "experiment": "labE_pipeline",
+    "variant": "serial",
+    "device": "cpu+cuda(gfx1100)",
+    "runtime": "pytorch-rocm",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 0,
+    "iters": 100,
+    "num_images": 0,
+    "notes": "per-image e2e stage-serial; no queue",
+    "extra": {
+      "round": 2,
+      "total_ms": 1468.9403610229492,
+      "images_per_s": 68.07628318576624
+    },
+    "timestamp": "2026-11-08T11:12:53",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 100,
+    "mean_ms": 14.5189,
+    "p50_ms": 13.855,
+    "p95_ms": 16.54,
+    "min_ms": 12.46,
+    "max_ms": 35.82
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "validation/v2.0.1/campaigns/c20261108_1108/labE_pipeline/labE_pipeline_serial_20261108_111253.csv",
+    "csv_sha256": "39297a1042a6f4e23fde6a94776cb5bb814f1ef3fbe572493c4de6963c52fd08"
+  }
+}

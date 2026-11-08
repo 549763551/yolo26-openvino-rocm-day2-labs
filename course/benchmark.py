@@ -169,14 +169,28 @@ def save_run(meta: RunMeta, samples_ms: list[float],
              derived: dict | None = None) -> dict:
     """Persist a benchmark run: per-iteration CSV + summary JSON.
 
-    Returns the summary dict including file paths and their sha256
-    (this is what charts and slides reference as evidence).
+    Evidence chain (v2.0.1, fixes the v2.0.0 self-hash bug):
+      * the CSV is the immutable measurement record;
+      * the summary JSON *references* the CSV sha256 but never its own hash
+        (a file cannot contain its own hash without circular rewrites);
+      * after the JSON is finalized, its sha256 is recorded in the
+        experiment-directory SHA256SUMS file (together with the CSV's);
+      * `scripts/verify_evidence.py` recomputes every hash from bytes.
+
+    Returns the summary dict (evidence.json_sha256, when present, is filled
+    by refresh_sums() and matches the file as finally written).
     """
     run_id = f"{meta.experiment}_{meta.variant}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     out_dir = RESULTS / meta.experiment
     out_dir.mkdir(parents=True, exist_ok=True)
     csv_path = out_dir / f"{run_id}.csv"
     json_path = out_dir / f"{run_id}_summary.json"
+
+    def _rel(p: Path) -> str:
+        try:
+            return str(p.relative_to(REPO))
+        except ValueError:
+            return str(p)
 
     lines = ["iteration,ms"] + [f"{i+1},{ms:.4f}"
                                 for i, ms in enumerate(samples_ms)]
@@ -188,16 +202,141 @@ def save_run(meta: RunMeta, samples_ms: list[float],
         "stats": stats_of(samples_ms),
         "derived": derived or {},
         "evidence": {
-            "csv": str(csv_path.relative_to(REPO)),
+            "csv": _rel(csv_path),
             "csv_sha256": sha256_of(csv_path),
         },
     }
-    json_path.write_text(json.dumps(summary, indent=2))
-    summary["evidence"]["json"] = str(json_path.relative_to(REPO))
+    json_path.write_text(json.dumps(summary, indent=2) + "\n")
+    summary["evidence"]["json"] = _rel(json_path)
     summary["evidence"]["json_sha256"] = sha256_of(json_path)
-    json_path.write_text(json.dumps(summary, indent=2))
-    print(f"[saved] {csv_path.relative_to(REPO)}  ({len(samples_ms)} samples)")
+    refresh_sums(out_dir)
+    print(f"[saved] {_rel(csv_path)}  ({len(samples_ms)} samples)")
     return summary
+
+
+def refresh_sums(out_dir: Path) -> Path:
+    """Rewrite <out_dir>/SHA256SUMS covering every *.csv and *_summary.json.
+
+    The sums file is regenerated from file bytes each time, so it is a
+    tamper-evident snapshot of the whole experiment directory (verified by
+    scripts/verify_evidence.py --campaign ...).
+    """
+    entries = []
+    for p in sorted(out_dir.iterdir()):
+        if p.suffix == ".csv" or p.name.endswith("_summary.json") \
+                or "records" in p.name and p.suffix == ".json":
+            entries.append(f"{sha256_of(p)}  {p.name}")
+    sums = out_dir / "SHA256SUMS"
+    sums.write_text("\n".join(entries) + "\n")
+    return sums
+
+
+# --------------------------------------------------------------------------
+# campaign / environment controls (v2.0.1)
+# --------------------------------------------------------------------------
+def set_results_root(path: Path) -> None:
+    """Redirect raw-run output (e.g. to validation/v2.0.1/campaigns/<id>/)."""
+    global RESULTS
+    RESULTS = Path(path)
+
+
+def results_root() -> Path:
+    return RESULTS
+
+
+def host_load() -> dict:
+    """Snapshot of host load + cgroup throttling counters (shared-machine
+    disclosure for benchmarks; not exclusive hardware)."""
+    out: dict = {}
+    try:
+        parts = Path("/proc/loadavg").read_text().split()
+        out["loadavg_1_5_15"] = [float(parts[0]), float(parts[1]), float(parts[2])]
+    except Exception:
+        pass
+    try:
+        d = dict(l.split() for l in Path("/sys/fs/cgroup/cpu.stat").read_text()
+                 .splitlines())
+        out["cgroup_nr_throttled"] = int(d.get("nr_throttled", -1))
+        out["cgroup_throttled_usec"] = int(d.get("throttled_usec", -1))
+    except Exception:
+        pass
+    return out
+
+
+_QUIET_SCAN_LAST: dict = {}
+
+
+def pick_quiet_cpus(n: int = 16, sample_s: float = 2.0) -> list[int]:
+    """Pick n CPUs (same NUMA node when possible) with the lowest utilization.
+
+    This machine's host is SHARED with other tenants; CPU benchmarks pin the
+    process to a quiet core set and record it, to reduce neighbor contention.
+    Selection is deterministic given the same /proc/stat snapshot.
+    """
+    def snap() -> dict[int, tuple[int, int]]:
+        d = {}
+        for ln in Path("/proc/stat").read_text().splitlines():
+            if ln.startswith("cpu") and ln[3].isdigit():
+                f = ln.split()
+                vals = list(map(int, f[1:]))
+                d[int(f[0][3:])] = (vals[3] + vals[4], sum(vals))
+        return d
+    a = snap()
+    time.sleep(sample_s)
+    b = snap()
+    busy = {c: 1.0 - (b[c][0] - a[c][0]) / max(1, b[c][1] - a[c][1])
+            for c in a if c in b}
+    allowed = sorted(os.sched_getaffinity(0))
+    numa = _numa_cpu_map()
+    best: list[int] = []
+    for node_cpus in numa.values():
+        cand = [c for c in node_cpus if c in busy]
+        cand.sort(key=lambda c: busy[c])
+        if len(cand) >= n:
+            best = cand[:n]
+            break
+    if not best:
+        best = sorted(allowed, key=lambda c: busy.get(c, 1.0))[:n]
+    _QUIET_SCAN_LAST["picked"] = best
+    _QUIET_SCAN_LAST["busy_of_picked"] = [round(busy.get(c, -1), 3) for c in best]
+    return best
+
+
+def pin_affinity(cpus: list[int] | None) -> list[int]:
+    """Set (or restore empty=full-mask) CPU affinity; returns previous mask."""
+    prev = sorted(os.sched_getaffinity(0))
+    if cpus is None:
+        os.sched_setaffinity(0, sorted(_NUMA_ALL_CPUS or prev))
+    else:
+        os.sched_setaffinity(0, sorted(cpus))
+    return prev
+
+
+def _numa_cpu_map() -> dict[str, list[int]]:
+    out: dict[str, list[int]] = {}
+    try:
+        nodes = sorted(Path("/sys/devices/system/node").glob("node[0-9]*"))
+        for nd in nodes:
+            cl = nd / "cpulist"
+            if cl.exists():
+                out[nd.name] = _parse_cpulist(cl.read_text().strip())
+    except Exception:
+        out["all"] = sorted(os.sched_getaffinity(0))
+    return out
+
+
+def _parse_cpulist(s: str) -> list[int]:
+    cpus: list[int] = []
+    for part in s.split(","):
+        if "-" in part:
+            a, b = part.split("-")
+            cpus.extend(range(int(a), int(b) + 1))
+        elif part:
+            cpus.append(int(part))
+    return cpus
+
+
+_NUMA_ALL_CPUS = sorted(os.sched_getaffinity(0))
 
 
 def sha256_of(path: Path) -> str:

@@ -1,0 +1,82 @@
+[
+  {
+    "notebook": "00_AMD_Environment_and_YOLO26l.ipynb",
+    "status": "PASS",
+    "code_cells": 7,
+    "cells_ok": 7,
+    "wall_s": 7.0,
+    "markers": {
+      "sha256": true,
+      "AuthenticAMD": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  },
+  {
+    "notebook": "01_Lab_A_CPU_vs_GPU_Baseline.ipynb",
+    "status": "PASS",
+    "code_cells": 9,
+    "cells_ok": 9,
+    "wall_s": 12.9,
+    "markers": {
+      "CPU P50": true,
+      "GPU P50": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  },
+  {
+    "notebook": "02_Lab_B_OpenVINO_AMD_CPU.ipynb",
+    "status": "PASS",
+    "code_cells": 7,
+    "cells_ok": 7,
+    "wall_s": 39.3,
+    "markers": {
+      "PyTorch CPU P50": true,
+      "OpenVINO CPU P50": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  },
+  {
+    "notebook": "03_Lab_C_OpenVINO_INT8.ipynb",
+    "status": "PASS",
+    "code_cells": 9,
+    "cells_ok": 9,
+    "wall_s": 29.6,
+    "markers": {
+      "FP32 P50": true,
+      "INT8 P50": true,
+      "mAP": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  },
+  {
+    "notebook": "04_Lab_D_ROCm_GPU_Optimization.ipynb",
+    "status": "PASS",
+    "code_cells": 6,
+    "cells_ok": 6,
+    "wall_s": 25.0,
+    "markers": {
+      "imgsz": true,
+      "batch=1": true,
+      "batch=8": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  },
+  {
+    "notebook": "05_Lab_E_AMD_CPU_GPU_Pipeline.ipynb",
+    "status": "PASS",
+    "code_cells": 7,
+    "cells_ok": 7,
+    "wall_s": 10.4,
+    "markers": {
+      "serial": true,
+      "pipeline": true
+    },
+    "error": null,
+    "kernel": "yolo26-day2"
+  }
+]

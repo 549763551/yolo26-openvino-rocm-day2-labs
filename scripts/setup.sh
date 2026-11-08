@@ -141,18 +141,28 @@ print("  identity recorded -> weights/model_identity.json")
 EOF
 ok "Official YOLO26l verified (80-class COCO detection)."
 
-say "Step 7/10 — COCO educational subsets (val + calibration, no overlap)"
-if [[ -f "$DATA_DIR/manifest.json" ]]; then
-  ok "Data manifest exists (skipping download)."
+say "Step 7/10 — COCO educational subsets (verify REAL files, repair if incomplete)"
+# v2.0.1 fix (defect B-01): the committed manifest alone is NOT proof that the
+# images exist. Always verify real image counts, labels, yaml, calib list and
+# per-file sha256; run the incremental repair (prepare_data.py) when anything
+# is missing or corrupt; re-verify and FAIL loudly if repair did not fix it.
+if "$PY" scripts/verify_data.py; then
+  ok "Data subsets verified (images + labels + yaml + calib + sha256)."
 else
-  "$PY" scripts/prepare_data.py 2>&1 | tail -6
+  say "Data incomplete/corrupt — incremental download/repair via prepare_data.py"
+  "$PY" scripts/prepare_data.py
+  "$PY" scripts/verify_data.py || fail "Data repair did not produce a valid dataset."
+  ok "Data subsets repaired and re-verified."
 fi
 
 say "Step 8/10 — Environment validation (versions + real compute on AMD CPU and W7900)"
 "$PY" course/setup_checks.py 2>&1 | tee "$LOG_DIR/setup_checks.log"
 
 say "Step 9/10 — Quick self-test of course tooling"
-"$PY" -m pytest -q tests/test_units.py 2>&1 | tail -2
+# v2.0.1 fix: pytest is a dev dependency and was missing in fresh venvs
+# (cold-start bug): install it (constrained) before the self-test.
+"$PY" -m pip install -q -c "$REPO_ROOT/constraints-rocm.txt" pytest 2>&1 | tail -1
+"$PY" -m pytest -q tests/test_units.py tests/test_v201_fixes.py 2>&1 | tail -2
 
 say "10/10 — Setup complete."
 cat <<EOF

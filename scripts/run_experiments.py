@@ -351,19 +351,24 @@ PROFILES = {
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--profile", choices=["quick", "full"], default="quick")
-    ap.add_argument("--only", default="environment,labA,labB,labC,labD,labE",
-                    help="comma list of experiments")
+    ap.add_argument("--resume", action="store_true",
+                    help="carry forward previous same-profile results "
+                         "(default: fresh latest.json every invocation)")
     args = ap.parse_args()
     cfg = PROFILES[args.profile]
 
+    # v2.0.1 fix (defect B-07): v2.0.0 silently merged results from previous
+    # runs, mixing run ids across invocations. Now a fresh start is the
+    # default; --resume is the explicit opt-in for continuing an interrupted
+    # FULL run of the same profile.
     out = {"profile": args.profile,
            "generated": datetime.now().isoformat(timespec="seconds")}
-    if RESULTS_LATEST.exists():
+    if args.resume and RESULTS_LATEST.exists():
         prev = json.loads(RESULTS_LATEST.read_text())
         if prev.get("profile") == args.profile:
             out.update({k: v for k, v in prev.items()
                         if k not in ("generated", "profile")})
+            out["resumed_from"] = prev.get("generated")
     out["profile"] = args.profile
     out["generated"] = datetime.now().isoformat(timespec="seconds")
 

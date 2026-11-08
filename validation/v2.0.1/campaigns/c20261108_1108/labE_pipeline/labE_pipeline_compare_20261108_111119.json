@@ -1,0 +1,20 @@
+{
+  "files_compared": 100,
+  "files_ok": 100,
+  "consistent": true,
+  "parity_rule": {
+    "class": "exact",
+    "iou_min": 0.95,
+    "conf_abs_tol": 0.02,
+    "match": "greedy one-to-one by IoU",
+    "justification": "same weights, same letterbox, same NMS-free postprocess; tolerance only covers FP reduction-order noise"
+  },
+  "global_min_iou": 1.0,
+  "global_max_d_conf": 0.0,
+  "mismatches": {},
+  "serial_total_ms": 1374.004041671753,
+  "pipeline_total_ms": 1184.822582244873,
+  "throughput_gain_x": 1.1596707070424328,
+  "serial_imgs_per_s": 72.77998969954254,
+  "pipeline_imgs_per_s": 84.40082211340948
+}
