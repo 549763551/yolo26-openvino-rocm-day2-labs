@@ -159,7 +159,10 @@ say "Step 8/10 — Environment validation (versions + real compute on AMD CPU an
 "$PY" course/setup_checks.py 2>&1 | tee "$LOG_DIR/setup_checks.log"
 
 say "Step 9/10 — Quick self-test of course tooling"
-"$PY" -m pytest -q tests/test_units.py 2>&1 | tail -2
+# v2.0.1 fix: pytest is a dev dependency and was missing in fresh venvs
+# (cold-start bug): install it (constrained) before the self-test.
+"$PY" -m pip install -q -c "$REPO_ROOT/constraints-rocm.txt" pytest 2>&1 | tail -1
+"$PY" -m pytest -q tests/test_units.py tests/test_v201_fixes.py 2>&1 | tail -2
 
 say "10/10 — Setup complete."
 cat <<EOF
