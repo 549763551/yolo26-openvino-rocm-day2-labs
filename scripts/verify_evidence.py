@@ -167,13 +167,21 @@ def main() -> int:
             verify_summary(j, problems)
         n_csv += len(list(exp_dir.glob("*.csv")))
 
-    # campaign-level manifest must exist for formal campaigns
-    for cand in ("CAMPAIGN.json", "SHA256SUMS"):
-        if (root / cand).exists():
-            break
-    else:
+    # campaign-level manifest: either the root itself is a campaign, or it
+    # contains campaign subdirectories (each verified above with its own
+    # SHA256SUMS); summaries outside any campaign dir require a root SUMS.
+    root_is_campaign = (root / "CAMPAIGN.json").exists()
+    sub_campaigns = [d for d in root.rglob("*")
+                     if d.is_dir() and (d / "CAMPAIGN.json").exists()]
+    if not root_is_campaign and not sub_campaigns:
         if any(root.rglob("*_summary.json")):
             problems.append("campaign root lacks CAMPAIGN.json/SHA256SUMS")
+    if not root_is_campaign and not (root / "SHA256SUMS").exists() \
+            and sub_campaigns:
+        # container directory: every campaign inside must be sealed
+        for d in sub_campaigns:
+            if not (d / "SHA256SUMS").exists():
+                problems.append(f"campaign {d.name} lacks SHA256SUMS")
 
     try:
         campaign_rel = root.relative_to(REPO)
