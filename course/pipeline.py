@@ -73,10 +73,23 @@ class PipelineRecord:
     n_det: int = 0
     error: str | None = None
     result_ref: object = field(default=None, repr=False)
+    detections: list = field(default_factory=list, repr=False)  # (cls,x1,y1,x2,y2,conf)
 
 
-def _detections_of(result) -> int:
-    return int(len(result.boxes)) if result.boxes is not None else 0
+def _detections_of(result) -> list:
+    """Extract (cls, x1, y1, x2, y2, conf) as plain floats from a Results obj."""
+    out = []
+    if result.boxes is None or len(result.boxes) == 0:
+        return out
+    import torch
+    bb = result.boxes
+    xyxy = bb.xyxy.cpu() if isinstance(bb.xyxy, torch.Tensor) else bb.xyxy
+    conf = bb.conf.cpu() if isinstance(bb.conf, torch.Tensor) else bb.conf
+    cls = bb.cls.cpu() if isinstance(bb.cls, torch.Tensor) else bb.cls
+    for i in range(len(bb)):
+        out.append((int(cls[i].item()), *(float(v) for v in xyxy[i].tolist()),
+                    float(conf[i].item())))
+    return out
 
 
 def run_serial(image_paths: list[Path], imgsz: int = 640,
@@ -104,8 +117,10 @@ def run_serial(image_paths: list[Path], imgsz: int = 640,
         t3 = now_ms()
         res = stages.postprocess(preds, im, im0)[0]
         t4 = now_ms()
+        dets = _detections_of(res)
         recs.append(PipelineRecord(i, p.name, t1 - t0, t2 - t1, t3 - t2,
-                                   t4 - t3, t4 - t0, _detections_of(res)))
+                                   t4 - t3, t4 - t0, len(dets),
+                                   detections=dets))
     total_ms = now_ms() - t_total0
     return _summarize("serial", recs, total_ms)
 
@@ -161,10 +176,11 @@ def run_pipeline(image_paths: list[Path], imgsz: int = 640,
         t_gpu1 = now_ms()
         res = stages.postprocess(preds, im, im0)[0]
         t_gpu2 = now_ms()
+        dets = _detections_of(res)
         done[i] = PipelineRecord(i, p.name, t_load, t_pre,
                                  t_gpu1 - t_gpu0, t_gpu2 - t_gpu1,
-                                 now_ms() - t_enq, _detections_of(res),
-                                 result_ref=res)
+                                 now_ms() - t_enq, len(dets),
+                                 result_ref=res, detections=dets)
         finished += 1
     total_ms = now_ms() - t_total0
     tp.join(timeout=5)
@@ -202,20 +218,113 @@ def _summarize(mode: str, recs: list[PipelineRecord], total_ms: float) -> dict:
                        "pre_ms": round(r.t_pre_ms, 2),
                        "infer_ms": round(r.t_infer_ms, 2),
                        "post_ms": round(r.t_post_ms, 2),
-                       "e2e_ms": round(r.t_e2e_ms, 2)} for r in ok],
+                       "e2e_ms": round(r.t_e2e_ms, 2),
+                       "detections": [[d[0], *[round(v, 3) for v in d[1:5]],
+                                       round(d[5], 5)] for d in r.detections]}
+                      for r in ok],
     }
 
 
-def compare_results(serial: dict, pipeline: dict, tol_det: int = 0) -> dict:
-    """Same images + same logic -> detection counts must match (tolerance 0)."""
-    s = {r["file"]: r["n_det"] for r in serial["per_image"]}
-    p = {r["file"]: r["n_det"] for r in pipeline["per_image"]}
-    mismatch = {f: (s[f], p[f]) for f in s if s[f] != p.get(f)}
+def _iou(a: tuple, b: tuple) -> float:
+    """IoU of two (cls,x1,y1,x2,y2,conf) boxes (coordinates in slots 1..5)."""
+    ax1, ay1, ax2, ay2 = a[1:5]
+    bx1, by1, bx2, by2 = b[1:5]
+    ix1, iy1 = max(ax1, bx1), max(ay1, by1)
+    ix2, iy2 = min(ax2, bx2), min(ay2, by2)
+    iw, ih = max(0.0, ix2 - ix1), max(0.0, iy2 - iy1)
+    inter = iw * ih
+    union = (ax2 - ax1) * (ay2 - ay1) + (bx2 - bx1) * (by2 - by1) - inter
+    return inter / union if union > 0 else 0.0
+
+
+def compare_detections(dets_a: list, dets_b: list, iou_tol: float = 0.95,
+                       conf_tol: float = 0.02) -> dict:
+    """One-to-one greedy parity check of two detection lists for ONE image.
+
+    Matching rule (documented tolerance, same-model FP32 paths): a pair matches
+    when class ids are EQUAL, IoU >= iou_tol and |conf_a - conf_b| <= conf_tol.
+    Justification: serial and pipeline run identical weights, identical
+    letterbox preprocessing, identical NMS-free postprocess; the only allowed
+    difference is floating-point reduction order on the GPU, bounded well
+    below these tolerances in practice. Greedy matching by best IoU.
+
+    Returns per-image verdict with matched pairs' min IoU / max conf delta and
+    the unmatched extras/misses (proof of WHAT differs, not just that)."""
+    pairs = []
+    for ia, a in enumerate(dets_a):
+        for ib, b in enumerate(dets_b):
+            if a[0] == b[0]:
+                iou = _iou(a, b)
+                if iou >= iou_tol and abs(a[5] - b[5]) <= conf_tol:
+                    pairs.append((iou, ia, ib))
+    pairs.sort(reverse=True)
+    used_a: set[int] = set()
+    used_b: set[int] = set()
+    matched = []
+    for iou, ia, ib in pairs:
+        if ia in used_a or ib in used_b:
+            continue
+        used_a.add(ia)
+        used_b.add(ib)
+        matched.append({"iou": round(iou, 6),
+                        "d_conf": round(abs(dets_a[ia][5] - dets_b[ib][5]), 8),
+                        "cls": dets_a[ia][0]})
+    extras = [dets_b[i] for i in range(len(dets_b)) if i not in used_b]
+    misses = [dets_a[i] for i in range(len(dets_a)) if i not in used_a]
+    return {
+        "n_a": len(dets_a), "n_b": len(dets_b),
+        "matched": len(matched),
+        "min_iou": min((m["iou"] for m in matched), default=None),
+        "max_d_conf": max((m["d_conf"] for m in matched), default=None),
+        "extra_in_b": [[d[0], [round(v, 2) for v in d[1:5]], round(d[5], 4)]
+                       for d in extras],
+        "missing_in_b": [[d[0], [round(v, 2) for v in d[1:5]], round(d[5], 4)]
+                         for d in misses],
+        "ok": len(matched) == len(dets_a) == len(dets_b),
+    }
+
+
+def compare_results(serial: dict, pipeline: dict, iou_tol: float = 0.95,
+                    conf_tol: float = 0.02) -> dict:
+    """Per-IMAGE, per-DETECTION parity between serial and pipeline outputs.
+
+    v2.0.1 (fixes defect B-03): v2.0.0 compared only len(boxes) per image,
+    which cannot detect swapped classes, shifted boxes or changed confidence.
+    This version matches every detection one-to-one (class + box IoU + conf
+    tolerance) and reports exact diffs for any mismatching image.
+    """
+    s = {r["file"]: r.get("detections") for r in serial["per_image"]}
+    p = {r["file"]: r.get("detections") for r in pipeline["per_image"]}
+    files = sorted(set(s) | set(p))
+    detail: dict[str, dict] = {}
+    n_ok = 0
+    for f in files:
+        da, db = s.get(f), p.get(f)
+        if da is None or db is None:
+            detail[f] = {"ok": False, "error": "image missing in one output"}
+            continue
+        detail[f] = compare_detections(da, db, iou_tol, conf_tol)
+        if detail[f]["ok"]:
+            n_ok += 1
+    consistent = n_ok == len(files)
+    min_iou = min((d["min_iou"] for d in detail.values()
+                   if d.get("min_iou") is not None), default=None)
+    max_d_conf = max((d["max_d_conf"] for d in detail.values()
+                      if d.get("max_d_conf") is not None), default=None)
     speedup = serial["total_ms"] / pipeline["total_ms"]
     return {
-        "files_compared": len(s),
-        "detection_mismatches": mismatch,
-        "consistent": all(s[f] == p.get(f) for f in s),
+        "files_compared": len(files),
+        "files_ok": n_ok,
+        "consistent": consistent,
+        "parity_rule": {"class": "exact", "iou_min": iou_tol,
+                        "conf_abs_tol": conf_tol,
+                        "match": "greedy one-to-one by IoU",
+                        "justification": "same weights, same letterbox, same "
+                                         "NMS-free postprocess; tolerance only "
+                                         "covers FP reduction-order noise"},
+        "global_min_iou": min_iou,
+        "global_max_d_conf": max_d_conf,
+        "mismatches": {f: d for f, d in detail.items() if not d.get("ok")},
         "serial_total_ms": serial["total_ms"],
         "pipeline_total_ms": pipeline["total_ms"],
         "throughput_gain_x": speedup,

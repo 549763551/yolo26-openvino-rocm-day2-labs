@@ -32,7 +32,7 @@ plt.rcParams.update({
     "figure.facecolor": BG, "axes.facecolor": PANEL,
     "axes.edgecolor": GRID, "axes.labelcolor": TEXT,
     "xtick.color": MUTED, "ytick.color": MUTED,
-    "text.color": TEXT, "font.family": "DejaVu Sans",
+    "text.color": TEXT, "font.family": ["DejaVu Sans", "Noto Sans CJK SC"],
     "font.size": 13, "axes.titlesize": 19, "axes.titleweight": "bold",
     "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.8,
     "axes.axisbelow": True, "svg.fonttype": "none",
@@ -81,7 +81,8 @@ def _style_axes(ax):
 
 
 # ---------------------------------------------------------------- Lab A ----
-def chart_cpu_vs_gpu(cpu_sum: dict, gpu_sum: dict, name="01_cpu_vs_gpu"):
+def chart_cpu_vs_gpu(cpu_sum: dict, gpu_sum: dict, name="01_cpu_vs_gpu",
+                     foot: str | None = None):
     fig, ax = plt.subplots(figsize=(12.8, 7.2))
     cs, gs = cpu_sum["stats"], gpu_sum["stats"]
     x = [0, 1]
@@ -115,12 +116,13 @@ def chart_cpu_vs_gpu(cpu_sum: dict, gpu_sum: dict, name="01_cpu_vs_gpu"):
     _finish(fig, ax,
             "Lab A · Same model, two AMD devices / 同一模型，两种 AMD 设备",
             "YOLO26l · PyTorch · batch 1 · imgsz 640 · end-to-end per image",
-            _foot(gpu_sum), name)
+            (foot or _foot(gpu_sum)), name)
 
 
 # ---------------------------------------------------------------- Lab B ----
 def chart_pytorch_vs_openvino(pt_sum: dict, ov_sum: dict, map_pt: float,
-                              map_ov: float, name="02_pytorch_vs_openvino_cpu"):
+                              map_ov: float, name="02_pytorch_vs_openvino_cpu",
+                              foot: str | None = None):
     fig, (ax, axr) = plt.subplots(1, 2, figsize=(12.8, 7.2),
                                   gridspec_kw={"width_ratios": [2.1, 1]})
     ps, os_ = pt_sum["stats"], ov_sum["stats"]
@@ -153,13 +155,14 @@ def chart_pytorch_vs_openvino(pt_sum: dict, ov_sum: dict, map_pt: float,
     _finish(fig, ax,
             "Lab B · Same AMD CPU, different runtime / 同一 CPU，不同推理运行时",
             "YOLO26l · FP32 · batch 1 · imgsz 640 · same postprocessing path",
-            _foot(ov_sum), name)
+            (foot or _foot(ov_sum)), name)
 
 
 # ---------------------------------------------------------------- Lab C ----
 def chart_fp32_vs_int8(fp32_sum: dict, int8_sum: dict, size_fp32: float,
                        size_int8: float, map_fp32: float, map_int8: float,
-                       name="03_fp32_vs_int8"):
+                       name="03_fp32_vs_int8", foot: str | None = None,
+                       subtitle: str | None = None):
     fig, axes = plt.subplots(1, 3, figsize=(12.8, 7.2))
     f5, i5 = fp32_sum["stats"], int8_sum["stats"]
 
@@ -194,15 +197,17 @@ def chart_fp32_vs_int8(fp32_sum: dict, int8_sum: dict, size_fp32: float,
     _style_axes(ax)
     _finish(fig, axes[0],
             "Lab C · INT8 quantization on AMD CPU / AMD CPU 上的 INT8 量化",
-            "YOLO26l · OpenVINO · NNCF post-training quantization · 150 real COCO calibration images",
-            _foot(int8_sum), name)
+            subtitle or ("YOLO26l · OpenVINO · NNCF post-training quantization "
+                         "· 150 real COCO calibration images"),
+            (foot or _foot(int8_sum)), name)
 
 
 # ---------------------------------------------------------------- Lab D ----
 def chart_resolution(imgsz_a: int, imgsz_b: int, lat_a: dict, lat_b: dict,
                      map_a: float | None, map_b: float | None,
                      mem_a: float, mem_b: float, summary: dict,
-                     name="04_resolution_vs_latency_accuracy"):
+                     name="04_resolution_vs_latency_accuracy",
+                     foot: str | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(12.8, 7.2))
     labels = [f"imgsz {imgsz_a}", f"imgsz {imgsz_b}"]
 
@@ -232,12 +237,13 @@ def chart_resolution(imgsz_a: int, imgsz_b: int, lat_a: dict, lat_b: dict,
     _finish(fig, axes[0],
             "Lab D-A · Input resolution trade-off / 输入分辨率的权衡",
             "YOLO26l · PyTorch ROCm · W7900 · batch 1 · smaller input = less compute",
-            _foot(summary), name)
+            (foot or _foot(summary)), name)
 
 
 def chart_batch(batch_a: int, batch_b: int, thr_a: float, thr_b: float,
                 lat_note_a: str, lat_note_b: str, mem_a: float, mem_b: float,
-                summary: dict, name="05_batch_vs_throughput"):
+                summary: dict, name="05_batch_vs_throughput",
+                foot: str | None = None, e2e_note: str | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(12.8, 7.2))
     labels = [f"batch {batch_a}", f"batch {batch_b}"]
 
@@ -257,12 +263,16 @@ def chart_batch(batch_a: int, batch_b: int, thr_a: float, thr_b: float,
     _style_axes(ax)
     _finish(fig, axes[0],
             "Lab D-B · Batch size vs throughput & memory / Batch 与吞吐、显存",
-            f"YOLO26l · W7900 · imgsz 640 · per-request latency NOT divided by batch: {lat_note_a} → {lat_note_b}",
-            _foot(summary), name)
+            (e2e_note or
+             f"YOLO26l · W7900 · imgsz 640 · per-request latency NOT divided "
+             f"by batch: {lat_note_a} → {lat_note_b}"),
+            (foot or _foot(summary)), name)
 
 
 # ---------------------------------------------------------------- Lab E ----
-def chart_pipeline(serial: dict, pipeline: dict, name="06_serial_vs_async_pipeline"):
+def chart_pipeline(serial: dict, pipeline: dict,
+                    name="06_serial_vs_async_pipeline",
+                    foot: str | None = None):
     fig, axes = plt.subplots(1, 2, figsize=(12.8, 7.2))
 
     ax = axes[0]
@@ -299,8 +309,9 @@ def chart_pipeline(serial: dict, pipeline: dict, name="06_serial_vs_async_pipeli
     _finish(fig, axes[0],
             "Lab E · CPU + GPU heterogeneous pipeline / CPU+GPU 异构流水线",
             f"{serial['n_images']} images · YOLO26l · W7900 · CPU prepare overlaps GPU compute",
-            f"serial {serial['images_per_s']:.1f} img/s → pipeline {pipeline['images_per_s']:.1f} img/s · "
-            f"detection consistency verified / 检测结果一致性已校验",
+            (foot or (f"serial {serial['images_per_s']:.1f} img/s → pipeline "
+                      f"{pipeline['images_per_s']:.1f} img/s · detection "
+                      f"consistency verified / 检测结果一致性已校验")),
             name)
 
 

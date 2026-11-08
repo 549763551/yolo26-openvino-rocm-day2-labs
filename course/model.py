@@ -114,5 +114,13 @@ def openvino_fp32_dir() -> Path:
     return WEIGHTS / "yolo26l_openvino_model"
 
 
-def openvino_int8_dir() -> Path:
-    return WEIGHTS / "yolo26l_int8_openvino_model"
+def openvino_int8_dir(n_calib_images: int | None = None, imgsz: int = 640,
+                      subset_size: int = 150, preset: str = "mixed") -> Path:
+    """INT8 cache directory for the given calibration configuration (v2.0.1).
+
+    Delegates to course.quantization.int8_cache_dir so that every consumer
+    (notebooks, experiments, tests) resolves the SAME identity-keyed path.
+    The v2.0.0 fixed path weights/yolo26l_int8_openvino_model is no longer
+    used implicitly — see course/quantization.py docstring."""
+    from .quantization import int8_cache_dir
+    return int8_cache_dir(n_calib_images, imgsz, subset_size, preset)

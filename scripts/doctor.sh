@@ -73,17 +73,8 @@ assert r["verified"]["num_classes"] == 80 and r["verified"]["task"] == "detect"
 print("identity    : OK — official YOLO26l COCO detection, 80 classes")
 EOF
 
-hr "6. Data subsets"
-"$PY" - <<'EOF'
-import json
-from pathlib import Path
-m = json.loads(Path("data/manifest.json").read_text())
-nv = len(m["val_images"]); nc = len(m["calib_images"])
-print(f"val images  : {nv}   calib images: {nc}   overlap: {m['overlap']}")
-print(f"val boxes   : {m['val_boxes_total']}")
-assert nv >= 100 and nc >= 100, "subsets too small"
-print("data        : OK (Educational COCO Subset — Not Official COCO Benchmark)")
-EOF
+hr "6. Data subsets (REAL file verification, v2.0.1)"
+"$PY" scripts/verify_data.py
 
 hr "7. Exports / results"
 ls -la weights/ 2>/dev/null | grep -E "yolo26l|int8|openvino" || echo "(no exports yet)"

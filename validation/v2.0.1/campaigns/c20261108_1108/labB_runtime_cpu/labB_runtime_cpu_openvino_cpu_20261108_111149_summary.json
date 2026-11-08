@@ -1,0 +1,63 @@
+{
+  "run_id": "labB_runtime_cpu_openvino_cpu_20261108_111149",
+  "meta": {
+    "experiment": "labB_runtime_cpu",
+    "variant": "openvino_cpu",
+    "device": "cpu",
+    "runtime": "openvino-cpu",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 10,
+    "iters": 50,
+    "num_images": 0,
+    "notes": "same CPU, same weights exported from same yolo26l.pt",
+    "extra": {
+      "affinity_cpus": [
+        24,
+        25,
+        26,
+        66,
+        73,
+        78,
+        79,
+        81,
+        95,
+        16,
+        7,
+        10,
+        11,
+        15,
+        74,
+        89
+      ],
+      "first_load_and_compile_s": 0.362,
+      "torch_threads": 8,
+      "round": 2
+    },
+    "timestamp": "2026-11-08T11:11:49",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 50,
+    "mean_ms": 87.37578800201416,
+    "p50_ms": 86.790602684021,
+    "p95_ms": 93.84549283981323,
+    "min_ms": 81.82364273071289,
+    "max_ms": 96.7078628540039
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "validation/v2.0.1/campaigns/c20261108_1108/labB_runtime_cpu/labB_runtime_cpu_openvino_cpu_20261108_111149.csv",
+    "csv_sha256": "245b04fd442e550f4c11fb1bb64d4dc37e3cb462e398742cce90453621cf61b4"
+  }
+}

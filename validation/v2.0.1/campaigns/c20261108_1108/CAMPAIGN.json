@@ -1,0 +1,773 @@
+{
+  "campaign_id": "c20261108_1108",
+  "started": "2026-11-08T11:15:33",
+  "total_wall_s": 394.2,
+  "rounds": 3,
+  "iters_per_variant": 50,
+  "warmup": 10,
+  "model": {
+    "file": "weights/yolo26l.pt",
+    "sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "task": "detect",
+    "classes": 80
+  },
+  "images": {
+    "list": "data/val_subset/images (sorted, 120 files)",
+    "mode": "cycled deterministically i % 120"
+  },
+  "environment": {
+    "platform": "Linux 6.8.0-79-generic",
+    "python": "3.12.3",
+    "cpu": {
+      "vendor": "AuthenticAMD",
+      "model": "AMD EPYC 9334 32-Core Processor",
+      "sockets": 0,
+      "cores_per_socket": 32,
+      "threads_per_core": 2,
+      "physical_cores": 0,
+      "logical_cpus": 0,
+      "threads": 0,
+      "cgroup_cpu_quota_cores": 16.0,
+      "process_affinity_cpus": 128,
+      "process_affinity_sample": "0-127",
+      "numa_nodes": 2,
+      "numa_layout": {
+        "node0": "0-95",
+        "node1": "32-127"
+      },
+      "flags_sample": [
+        "avx2",
+        "avx512f",
+        "avx512_bf16"
+      ],
+      "notes": "AMD EPYC (Zen4): AVX-512/BF16 available; Intel AMX NOT present (AMD CPU); cgroup quota is a container limit, not the physical core count."
+    },
+    "rocm": {
+      "gfx": [
+        "gfx1100"
+      ],
+      "card_model": "Card Series",
+      "rocm_smi_version": null
+    },
+    "torch": "2.12.0+rocm7.14.1",
+    "torchvision": "0.27.0+rocm7.14.1",
+    "hip": "7.14.60850",
+    "cuda_available": true,
+    "device_name": "AMD Radeon Pro W7900D",
+    "device_count": 1,
+    "gpu_matmul_ok": true,
+    "gpu_nms_ok": true,
+    "gpu_nms_result": [
+      0,
+      2
+    ],
+    "cpu_matmul_ok": true,
+    "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+    "available_devices": [
+      "CPU",
+      "GPU"
+    ],
+    "ultralytics": "8.4.207"
+  },
+  "cpu_protocol": {
+    "affinity": "quiet 16 CPUs (one NUMA node), re-picked per round, recorded per run in meta.extra.affinity_cpus",
+    "cgroup_quota_cores": 16.0,
+    "torch_threads": 8,
+    "rationale": "16-core cgroup quota; >16 threads causes cgroup throttling and bimodal latency (R2.3 diagnosis)"
+  },
+  "run_ids": {
+    "labA_cpu": [
+      "labA_cpu_vs_gpu_pytorch_cpu_20261108_110915",
+      "labA_cpu_vs_gpu_pytorch_cpu_20261108_111137",
+      "labA_cpu_vs_gpu_pytorch_cpu_20261108_111313"
+    ],
+    "labA_gpu": [
+      "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_110918",
+      "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_111140",
+      "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_111315"
+    ],
+    "labB_pt": [
+      "labB_runtime_cpu_pytorch_cpu_20261108_110936",
+      "labB_runtime_cpu_pytorch_cpu_20261108_111205",
+      "labB_runtime_cpu_pytorch_cpu_20261108_111332"
+    ],
+    "labB_ov": [
+      "labB_runtime_cpu_openvino_cpu_20261108_110944",
+      "labB_runtime_cpu_openvino_cpu_20261108_111149",
+      "labB_runtime_cpu_openvino_cpu_20261108_111340"
+    ],
+    "labC_fp32": [
+      "labC_int8_openvino_fp32_20261108_111041",
+      "labC_int8_openvino_fp32_20261108_111215",
+      "labC_int8_openvino_fp32_20261108_111349"
+    ],
+    "labC_int8": [
+      "labC_int8_openvino_int8_20261108_111049",
+      "labC_int8_openvino_int8_20261108_111222",
+      "labC_int8_openvino_int8_20261108_111355"
+    ],
+    "labD_res_640": [
+      "labD_resolution_imgsz640_20261108_111052",
+      "labD_resolution_imgsz640_20261108_111225",
+      "labD_resolution_imgsz640_20261108_111358"
+    ],
+    "labD_res_512": [
+      "labD_resolution_imgsz512_20261108_111054",
+      "labD_resolution_imgsz512_20261108_111227",
+      "labD_resolution_imgsz512_20261108_111401"
+    ],
+    "labD_b1": [
+      "labD_batch_batch1_forward_20261108_111057",
+      "labD_batch_batch1_forward_20261108_111230",
+      "labD_batch_batch1_forward_20261108_111404"
+    ],
+    "labD_b8": [
+      "labD_batch_batch8_forward_20261108_111103",
+      "labD_batch_batch8_forward_20261108_111236",
+      "labD_batch_batch8_forward_20261108_111410"
+    ],
+    "labD_b1_e2e": [
+      "labD_batch_batch1_e2e_20261108_111110",
+      "labD_batch_batch1_e2e_20261108_111243",
+      "labD_batch_batch1_e2e_20261108_111418"
+    ],
+    "labD_b8_e2e": [
+      "labD_batch_batch8_e2e_20261108_111112",
+      "labD_batch_batch8_e2e_20261108_111245",
+      "labD_batch_batch8_e2e_20261108_111419"
+    ],
+    "labE_serial": [
+      "labE_pipeline_serial_20261108_111119",
+      "labE_pipeline_serial_20261108_111253",
+      "labE_pipeline_serial_20261108_111427"
+    ],
+    "labE_pipeline": [
+      "labE_pipeline_async_pipeline_20261108_111121",
+      "labE_pipeline_async_pipeline_20261108_111254",
+      "labE_pipeline_async_pipeline_20261108_111429"
+    ]
+  },
+  "round_env": [
+    {
+      "start": {
+        "tag": "round1-start",
+        "time": "2026-11-08T11:08:59",
+        "loadavg_1_5_15": [
+          28.15,
+          32.03,
+          30.77
+        ],
+        "cgroup_nr_throttled": 11853,
+        "cgroup_throttled_usec": 10344466485
+      }
+    },
+    {
+      "end": {
+        "tag": "round1-end",
+        "time": "2026-11-08T11:11:22",
+        "loadavg_1_5_15": [
+          42.43,
+          36.72,
+          32.72
+        ],
+        "cgroup_nr_throttled": 12615,
+        "cgroup_throttled_usec": 10664158491
+      }
+    },
+    {
+      "start": {
+        "tag": "round2-start",
+        "time": "2026-11-08T11:11:22",
+        "loadavg_1_5_15": [
+          42.43,
+          36.72,
+          32.72
+        ],
+        "cgroup_nr_throttled": 12615,
+        "cgroup_throttled_usec": 10664158491
+      }
+    },
+    {
+      "end": {
+        "tag": "round2-end",
+        "time": "2026-11-08T11:12:56",
+        "loadavg_1_5_15": [
+          38.42,
+          37.26,
+          33.3
+        ],
+        "cgroup_nr_throttled": 13032,
+        "cgroup_throttled_usec": 10749479617
+      }
+    },
+    {
+      "start": {
+        "tag": "round3-start",
+        "time": "2026-11-08T11:12:56",
+        "loadavg_1_5_15": [
+          38.42,
+          37.26,
+          33.3
+        ],
+        "cgroup_nr_throttled": 13032,
+        "cgroup_throttled_usec": 10749479617
+      }
+    },
+    {
+      "end": {
+        "tag": "round3-end",
+        "time": "2026-11-08T11:14:30",
+        "loadavg_1_5_15": [
+          42.02,
+          39.01,
+          34.31
+        ],
+        "cgroup_nr_throttled": 13424,
+        "cgroup_throttled_usec": 10830344579
+      }
+    }
+  ],
+  "maps": {
+    "pytorch_cpu_640": {
+      "map50_95": 0.6398394119695376,
+      "map50": 0.7961921147735365,
+      "map75": 0.6881819915430561
+    },
+    "pytorch_cuda_640": {
+      "map50_95": 0.6398394119695376,
+      "map50": 0.7961921147735365,
+      "map75": 0.6881819915430561
+    },
+    "pytorch_cuda_512": {
+      "map50_95": 0.6159257590168178,
+      "map50": 0.7782643124005101,
+      "map75": 0.6659557636018262
+    },
+    "openvino_fp32_cpu_640": {
+      "map50_95": 0.6349081347717388,
+      "map50": 0.7873415261532896,
+      "map75": 0.677512994809706
+    },
+    "openvino_int8_cpu_640": {
+      "map50_95": 0.5681614386554623,
+      "map50": 0.7687615754085164,
+      "map75": 0.6283608394506005
+    }
+  },
+  "aggregate": {
+    "labA_cpu": {
+      "rounds": [
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_cpu_20261108_110915",
+          "p50_ms": 188.77138710021973,
+          "p95_ms": 470.62622098922645,
+          "mean_ms": 221.49683891296388,
+          "n": 50
+        },
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_cpu_20261108_111137",
+          "p50_ms": 191.282732963562,
+          "p95_ms": 438.9089518547049,
+          "mean_ms": 215.40583435058593,
+          "n": 50
+        },
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_cpu_20261108_111313",
+          "p50_ms": 203.10168266296387,
+          "p95_ms": 476.12807455062796,
+          "mean_ms": 238.12511428833008,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 191.282732963562,
+      "p50_min_ms": 188.77138710021973,
+      "p50_max_ms": 203.10168266296387,
+      "p95_median_ms": 470.62622098922645,
+      "spread_pct": 7.5
+    },
+    "labA_gpu": {
+      "rounds": [
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_110918",
+          "p50_ms": 13.455711364746094,
+          "p95_ms": 25.64363927841186,
+          "mean_ms": 14.80568733215332,
+          "n": 50
+        },
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_111140",
+          "p50_ms": 13.532329559326172,
+          "p95_ms": 15.115190029144285,
+          "mean_ms": 13.670132026672363,
+          "n": 50
+        },
+        {
+          "run_id": "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_111315",
+          "p50_ms": 14.240139961242676,
+          "p95_ms": 15.733899021148682,
+          "mean_ms": 14.301114540100098,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 13.532329559326172,
+      "p50_min_ms": 13.455711364746094,
+      "p50_max_ms": 14.240139961242676,
+      "p95_median_ms": 15.733899021148682,
+      "spread_pct": 5.8
+    },
+    "labB_pt": {
+      "rounds": [
+        {
+          "run_id": "labB_runtime_cpu_pytorch_cpu_20261108_110936",
+          "p50_ms": 199.3899850845337,
+          "p95_ms": 455.07627487182526,
+          "mean_ms": 226.94634143829344,
+          "n": 50
+        },
+        {
+          "run_id": "labB_runtime_cpu_pytorch_cpu_20261108_111205",
+          "p50_ms": 198.5410442352295,
+          "p95_ms": 440.5567496299735,
+          "mean_ms": 229.4843534088135,
+          "n": 50
+        },
+        {
+          "run_id": "labB_runtime_cpu_pytorch_cpu_20261108_111332",
+          "p50_ms": 187.67072105407715,
+          "p95_ms": 441.01907300949,
+          "mean_ms": 215.1250017929077,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 198.5410442352295,
+      "p50_min_ms": 187.67072105407715,
+      "p50_max_ms": 199.3899850845337,
+      "p95_median_ms": 441.01907300949,
+      "spread_pct": 5.9
+    },
+    "labB_ov": {
+      "rounds": [
+        {
+          "run_id": "labB_runtime_cpu_openvino_cpu_20261108_110944",
+          "p50_ms": 99.39662647247314,
+          "p95_ms": 106.08495473861694,
+          "mean_ms": 99.92686069488525,
+          "n": 50
+        },
+        {
+          "run_id": "labB_runtime_cpu_openvino_cpu_20261108_111149",
+          "p50_ms": 86.790602684021,
+          "p95_ms": 93.84549283981323,
+          "mean_ms": 87.37578800201416,
+          "n": 50
+        },
+        {
+          "run_id": "labB_runtime_cpu_openvino_cpu_20261108_111340",
+          "p50_ms": 87.22064685821533,
+          "p95_ms": 91.66910886764526,
+          "mean_ms": 86.8707600402832,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 87.22064685821533,
+      "p50_min_ms": 86.790602684021,
+      "p50_max_ms": 99.39662647247314,
+      "p95_median_ms": 93.84549283981323,
+      "spread_pct": 14.5
+    },
+    "labC_fp32": {
+      "rounds": [
+        {
+          "run_id": "labC_int8_openvino_fp32_20261108_111041",
+          "p50_ms": 98.87717342376709,
+          "p95_ms": 102.12623023986816,
+          "mean_ms": 98.50411296844483,
+          "n": 50
+        },
+        {
+          "run_id": "labC_int8_openvino_fp32_20261108_111215",
+          "p50_ms": 98.30031108856201,
+          "p95_ms": 103.97665090560913,
+          "mean_ms": 98.81767116546631,
+          "n": 50
+        },
+        {
+          "run_id": "labC_int8_openvino_fp32_20261108_111349",
+          "p50_ms": 88.03870296478271,
+          "p95_ms": 92.96687259674073,
+          "mean_ms": 88.49435611724853,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 98.30031108856201,
+      "p50_min_ms": 88.03870296478271,
+      "p50_max_ms": 98.87717342376709,
+      "p95_median_ms": 102.12623023986816,
+      "spread_pct": 11.0
+    },
+    "labC_int8": {
+      "rounds": [
+        {
+          "run_id": "labC_int8_openvino_int8_20261108_111049",
+          "p50_ms": 79.17539405822754,
+          "p95_ms": 83.72703781127929,
+          "mean_ms": 79.32370956420898,
+          "n": 50
+        },
+        {
+          "run_id": "labC_int8_openvino_int8_20261108_111222",
+          "p50_ms": 78.14447689056396,
+          "p95_ms": 83.42629442214965,
+          "mean_ms": 79.10162944793701,
+          "n": 50
+        },
+        {
+          "run_id": "labC_int8_openvino_int8_20261108_111355",
+          "p50_ms": 68.35937881469727,
+          "p95_ms": 73.56076097488403,
+          "mean_ms": 68.72158267974854,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 78.14447689056396,
+      "p50_min_ms": 68.35937881469727,
+      "p50_max_ms": 79.17539405822754,
+      "p95_median_ms": 83.42629442214965,
+      "spread_pct": 13.8
+    },
+    "labD_res_640": {
+      "rounds": [
+        {
+          "run_id": "labD_resolution_imgsz640_20261108_111052",
+          "p50_ms": 13.488245010375977,
+          "p95_ms": 14.679862403869627,
+          "mean_ms": 13.560746116638184,
+          "n": 50
+        },
+        {
+          "run_id": "labD_resolution_imgsz640_20261108_111225",
+          "p50_ms": 13.703864097595215,
+          "p95_ms": 14.962432384490965,
+          "mean_ms": 13.7925235748291,
+          "n": 50
+        },
+        {
+          "run_id": "labD_resolution_imgsz640_20261108_111358",
+          "p50_ms": 13.681650161743164,
+          "p95_ms": 16.3636492729187,
+          "mean_ms": 15.090485725402832,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 13.681650161743164,
+      "p50_min_ms": 13.488245010375977,
+      "p50_max_ms": 13.703864097595215,
+      "p95_median_ms": 14.962432384490965,
+      "spread_pct": 1.6
+    },
+    "labD_res_512": {
+      "rounds": [
+        {
+          "run_id": "labD_resolution_imgsz512_20261108_111054",
+          "p50_ms": 13.283845901489258,
+          "p95_ms": 20.04260692596433,
+          "mean_ms": 13.884958190917969,
+          "n": 50
+        },
+        {
+          "run_id": "labD_resolution_imgsz512_20261108_111227",
+          "p50_ms": 13.504590034484863,
+          "p95_ms": 14.215891933441162,
+          "mean_ms": 13.482894706726075,
+          "n": 50
+        },
+        {
+          "run_id": "labD_resolution_imgsz512_20261108_111401",
+          "p50_ms": 14.414472579956055,
+          "p95_ms": 21.068176651000954,
+          "mean_ms": 14.975205879211426,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 13.504590034484863,
+      "p50_min_ms": 13.283845901489258,
+      "p50_max_ms": 14.414472579956055,
+      "p95_median_ms": 20.04260692596433,
+      "spread_pct": 8.4
+    },
+    "labD_b1": {
+      "rounds": [
+        {
+          "run_id": "labD_batch_batch1_forward_20261108_111057",
+          "p50_ms": 10.50704574584961,
+          "p95_ms": 11.770555400848389,
+          "mean_ms": 10.484289932250977,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch1_forward_20261108_111230",
+          "p50_ms": 10.500091552734375,
+          "p95_ms": 12.944535541534423,
+          "mean_ms": 11.862993431091308,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch1_forward_20261108_111404",
+          "p50_ms": 10.743626594543457,
+          "p95_ms": 11.514392662048339,
+          "mean_ms": 10.650175895690918,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 10.50704574584961,
+      "p50_min_ms": 10.500091552734375,
+      "p50_max_ms": 10.743626594543457,
+      "p95_median_ms": 11.770555400848389,
+      "spread_pct": 2.3
+    },
+    "labD_b8": {
+      "rounds": [
+        {
+          "run_id": "labD_batch_batch8_forward_20261108_111103",
+          "p50_ms": 55.10173225402832,
+          "p95_ms": 55.43104248046875,
+          "mean_ms": 55.10669460296631,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch8_forward_20261108_111236",
+          "p50_ms": 55.22152233123779,
+          "p95_ms": 61.04075813293456,
+          "mean_ms": 56.009445877075194,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch8_forward_20261108_111410",
+          "p50_ms": 55.3076057434082,
+          "p95_ms": 56.02283239364624,
+          "mean_ms": 56.41162425994873,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 55.22152233123779,
+      "p50_min_ms": 55.10173225402832,
+      "p50_max_ms": 55.3076057434082,
+      "p95_median_ms": 56.02283239364624,
+      "spread_pct": 0.4
+    },
+    "labD_b1_e2e": {
+      "rounds": [
+        {
+          "run_id": "labD_batch_batch1_e2e_20261108_111110",
+          "p50_ms": 13.426351547241211,
+          "p95_ms": 13.887929248809813,
+          "mean_ms": 13.495894012451172,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch1_e2e_20261108_111243",
+          "p50_ms": 13.584434509277344,
+          "p95_ms": 14.856529903411865,
+          "mean_ms": 13.908717231750488,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch1_e2e_20261108_111418",
+          "p50_ms": 13.749329566955566,
+          "p95_ms": 15.594758224487304,
+          "mean_ms": 14.617374725341797,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 13.584434509277344,
+      "p50_min_ms": 13.426351547241211,
+      "p50_max_ms": 13.749329566955566,
+      "p95_median_ms": 14.856529903411865,
+      "spread_pct": 2.4
+    },
+    "labD_b8_e2e": {
+      "rounds": [
+        {
+          "run_id": "labD_batch_batch8_e2e_20261108_111112",
+          "p50_ms": 79.99472999572754,
+          "p95_ms": 83.28629055023193,
+          "mean_ms": 80.19368927001953,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch8_e2e_20261108_111245",
+          "p50_ms": 80.03918170928955,
+          "p95_ms": 82.88039445877075,
+          "mean_ms": 80.3000880432129,
+          "n": 50
+        },
+        {
+          "run_id": "labD_batch_batch8_e2e_20261108_111419",
+          "p50_ms": 82.45019245147705,
+          "p95_ms": 100.75873975753782,
+          "mean_ms": 88.22285270690918,
+          "n": 50
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 80.03918170928955,
+      "p50_min_ms": 79.99472999572754,
+      "p50_max_ms": 82.45019245147705,
+      "p95_median_ms": 83.28629055023193,
+      "spread_pct": 3.1
+    },
+    "labE_serial": {
+      "rounds": [
+        {
+          "run_id": "labE_pipeline_serial_20261108_111119",
+          "p50_ms": 13.495000000000001,
+          "p95_ms": 15.025499999999997,
+          "mean_ms": 13.5745,
+          "n": 100
+        },
+        {
+          "run_id": "labE_pipeline_serial_20261108_111253",
+          "p50_ms": 13.855,
+          "p95_ms": 16.54,
+          "mean_ms": 14.5189,
+          "n": 100
+        },
+        {
+          "run_id": "labE_pipeline_serial_20261108_111427",
+          "p50_ms": 13.96,
+          "p95_ms": 22.409499999999998,
+          "mean_ms": 16.8715,
+          "n": 100
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 13.855,
+      "p50_min_ms": 13.495000000000001,
+      "p50_max_ms": 13.96,
+      "p95_median_ms": 16.54,
+      "spread_pct": 3.4
+    },
+    "labE_pipeline": {
+      "rounds": [
+        {
+          "run_id": "labE_pipeline_async_pipeline_20261108_111121",
+          "p50_ms": 598.4100000000001,
+          "p95_ms": 1127.0895,
+          "mean_ms": 599.8231,
+          "n": 100
+        },
+        {
+          "run_id": "labE_pipeline_async_pipeline_20261108_111254",
+          "p50_ms": 603.535,
+          "p95_ms": 1133.9189999999999,
+          "mean_ms": 604.1985,
+          "n": 100
+        },
+        {
+          "run_id": "labE_pipeline_async_pipeline_20261108_111429",
+          "p50_ms": 610.81,
+          "p95_ms": 1149.6825000000001,
+          "mean_ms": 609.6952,
+          "n": 100
+        }
+      ],
+      "rounds_n": 3,
+      "p50_median_ms": 603.535,
+      "p50_min_ms": 598.4100000000001,
+      "p50_max_ms": 610.81,
+      "p95_median_ms": 1133.9189999999999,
+      "spread_pct": 2.1
+    }
+  },
+  "headline": {
+    "labA": {
+      "cpu_p50_ms": 191.282732963562,
+      "gpu_p50_ms": 13.532329559326172,
+      "speedup_x": 14.14,
+      "kind": "hardware comparison (CPU device vs GPU device)"
+    },
+    "labB": {
+      "pt_p50_ms": 198.5410442352295,
+      "ov_p50_ms": 87.22064685821533,
+      "speedup_x": 2.28,
+      "map_pytorch": {
+        "map50_95": 0.6398394119695376,
+        "map50": 0.7961921147735365,
+        "map75": 0.6881819915430561
+      },
+      "map_openvino": {
+        "map50_95": 0.6349081347717388,
+        "map50": 0.7873415261532896,
+        "map75": 0.677512994809706
+      },
+      "kind": "same-CPU runtime comparison"
+    },
+    "labC": {
+      "fp32_p50_ms": 98.30031108856201,
+      "int8_p50_ms": 78.14447689056396,
+      "speedup_x": 1.26,
+      "map_fp32": {
+        "map50_95": 0.6349081347717388,
+        "map50": 0.7873415261532896,
+        "map75": 0.677512994809706
+      },
+      "map_int8": {
+        "map50_95": 0.5681614386554623,
+        "map50": 0.7687615754085164,
+        "map75": 0.6283608394506005
+      },
+      "int8_identity": "867b0ce382f1efc13d60ca096b3a41f32811b2f816249caad481049d5c513925"
+    },
+    "labD_res": {
+      "i640_p50_ms": 13.681650161743164,
+      "i512_p50_ms": 13.504590034484863,
+      "map_640": {
+        "map50_95": 0.6398394119695376,
+        "map50": 0.7961921147735365,
+        "map75": 0.6881819915430561
+      },
+      "map_512": {
+        "map50_95": 0.6159257590168178,
+        "map50": 0.7782643124005101,
+        "map75": 0.6659557636018262
+      }
+    },
+    "labD_batch": {
+      "b1_fwd_p50_ms": 10.50704574584961,
+      "b8_fwd_p50_ms": 55.22152233123779,
+      "b1_fwd_thr_img_s": 95.2,
+      "b8_fwd_thr_img_s": 144.9,
+      "fwd_gain_x": 1.52,
+      "b1_e2e_p50_ms": 13.584434509277344,
+      "b8_e2e_p50_ms": 80.03918170928955,
+      "labels": "forward-only throughput is NOT end-to-end; e2e variants measured separately"
+    },
+    "labE": {
+      "consistent": true,
+      "files_ok": 100,
+      "files_compared": 100,
+      "global_min_iou": 1.0,
+      "global_max_d_conf": 0.0,
+      "serial_imgs_per_s": 58.6162866885589,
+      "pipeline_imgs_per_s": 83.12606688260162,
+      "throughput_gain_x": 1.418,
+      "serial_e2e_p50_ms": 13.962173461914062,
+      "pipeline_e2e_p50_ms": 610.8091344833374,
+      "serial_e2e_note": "no queue (per-image execution time)",
+      "pipeline_e2e_note": "burst submit->result incl. queue wait",
+      "scenario1_burst": true
+    }
+  },
+  "notes": "All latency variants: warmup excluded, every sample kept. GPU timing cuda-synchronized. Host is shared \u2014 load and throttle counters recorded per round."
+}
