@@ -116,6 +116,12 @@ def main() -> int:
     # 2-5. per-run recomputation + invariants
     runs: dict[str, dict[str, list[float]]] = {}
     run_meta: dict[str, list[dict]] = {}
+    campaign_run_ids = set()
+    for v in campaign.get("run_ids", {}).values():
+        campaign_run_ids.update(v)
+    expected_counts = {k: len(v) for k, v in
+                       campaign.get("run_ids", {}).items()}
+    membership_counts: dict[str, int] = {}
     for exp_dir in sorted(p for p in root.iterdir() if p.is_dir()
                           and p.name != "maps"):
         summaries = sorted(exp_dir.glob("*_summary.json"))
@@ -138,6 +144,16 @@ def main() -> int:
         for sp in summaries:
             s = json.loads(sp.read_text())
             rid = s["run_id"]
+            # campaign membership (fault injection F7): every summary inside a
+            # campaign MUST be one of this campaign's recorded run ids — a
+            # stale run from another campaign/day is rejected even if its
+            # content looks valid (same model, same machine).
+            if rid not in campaign_run_ids:
+                problems.append(f"FOREIGN RUN in campaign: {exp_dir.name}/"
+                                f"{sp.name} (run id {rid} not listed in "
+                                "CAMPAIGN.json run_ids — stale-run mixing)")
+            else:
+                membership_counts[rid] = membership_counts.get(rid, 0) + 1
             meta = s["meta"]
             variant = meta["variant"]
             # model identity
