@@ -1,0 +1,41 @@
+{
+  "run_id": "labD_resolution_imgsz640_20261108_112135",
+  "meta": {
+    "experiment": "labD_resolution",
+    "variant": "imgsz640",
+    "device": "cuda(gfx1100)",
+    "runtime": "pytorch-rocm",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 3,
+    "iters": 10,
+    "num_images": 0,
+    "notes": "notebook quick run",
+    "extra": {},
+    "timestamp": "2026-11-08T11:21:35",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 10,
+    "mean_ms": 12.895446014404296,
+    "p50_ms": 12.879426956176758,
+    "p95_ms": 13.020347213745117,
+    "min_ms": 12.795503616333008,
+    "max_ms": 13.032772064208984
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "results/raw/labD_resolution/labD_resolution_imgsz640_20261108_112135.csv",
+    "csv_sha256": "b45eb772546e12ac1d4c1b3eab3bf5a5f5b02e79524998b4339671c98a1d7b3f"
+  }
+}
