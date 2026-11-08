@@ -57,7 +57,7 @@ def cpu_info() -> dict:
             if ":" in ln:
                 k, v = ln.split(":", 1)
                 get[k.strip()] = v.strip()
-        info["sockets"] = int(get.get("Socket(s):", 0) or 0)
+        info["sockets"] = int(get.get("Socket(s)", 0) or 0)
         info["cores_per_socket"] = int(get.get("Core(s) per socket", 0) or 0)
         info["threads_per_core"] = int(get.get("Thread(s) per core", 0) or 0)
         # v2.0.0 bug: threads = threads_per_core * sockets. Correct math:
@@ -84,8 +84,12 @@ def cpu_info() -> dict:
         except Exception:
             pass
         info["numa_nodes"] = len(numa) or None
-        info["numa_layout"] = {k: (f"{min(v)}-{max(v)}" if len(v) > 8 else v)
-                               for k, v in numa.items()}
+        info["numa_layout"] = {}
+        for k, v in numa.items():
+            cpulist_path = Path("/sys/devices/system/node") / k / "cpulist"
+            info["numa_layout"][k] = (
+                cpulist_path.read_text().strip() if cpulist_path.exists() else v
+            )
         flags = next((ln for ln in lines if ln.startswith("flags")), "")
         have = set(flags.split())
         info["flags_sample"] = [f for f in ("avx2", "avx512f", "avx512_bf16")

@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    branches: [main, "release/v2.0.1-r1-r3-validated"]
   pull_request:
     branches: [main]
 
@@ -24,9 +24,7 @@ jobs:
           python -m pip install numpy matplotlib pandas nbformat pytest pytest-timeout
       - name: Compile all course code
         run: python -m compileall course scripts tests -q
-      - name: Unit tests (incl. v2.0.1 fix regressions: data integrity,
-          evidence chain tamper detection, detection parity, topology math,
-          model-rule gate)
+      - name: "Unit tests: v2.0.1 regression coverage"
         run: python -m pytest -q tests/test_units.py tests/test_v201_fixes.py
       - name: Notebooks are valid, bilingual and have student parameters
         run: python tests/validate_notebooks.py
