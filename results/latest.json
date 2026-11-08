@@ -1,0 +1,2444 @@
+{
+  "profile": "full",
+  "generated": "2026-11-08T09:56:56",
+  "environment": {
+    "platform": "Linux 6.8.0-79-generic",
+    "python": "3.12.3",
+    "cpu": {
+      "vendor": "AuthenticAMD",
+      "model": "AMD EPYC 9334 32-Core Processor",
+      "physical_cores": 64,
+      "threads": 4,
+      "sockets": 2,
+      "numa_nodes": 2,
+      "flags_sample": [
+        "avx2",
+        "avx512f",
+        "avx512_bf16"
+      ]
+    },
+    "rocm": {
+      "gfx": [
+        "gfx1100"
+      ],
+      "card_model": "Card Series",
+      "rocm_smi_version": null
+    },
+    "torch": "2.12.0+rocm7.14.1",
+    "torchvision": "0.27.0+rocm7.14.1",
+    "hip": "7.14.60850",
+    "cuda_available": true,
+    "device_name": "AMD Radeon Pro W7900D",
+    "device_count": 1,
+    "gpu_matmul_ok": true,
+    "gpu_nms_ok": true,
+    "gpu_nms_result": [
+      0,
+      2
+    ],
+    "cpu_matmul_ok": true,
+    "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+    "available_devices": [
+      "CPU",
+      "GPU"
+    ],
+    "ultralytics": "8.4.207"
+  },
+  "labA": {
+    "cpu": {
+      "run_id": "labA_cpu_vs_gpu_pytorch_cpu_20261108_095706",
+      "meta": {
+        "experiment": "labA_cpu_vs_gpu",
+        "variant": "pytorch_cpu",
+        "device": "cpu",
+        "runtime": "pytorch-rocm-cpu",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "fp32",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "end-to-end per image (pre+infer+post)",
+        "extra": {},
+        "timestamp": "2026-11-08T09:57:06",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 127.14409648895264,
+        "p50_ms": 124.83148860931396,
+        "p95_ms": 160.041394329071,
+        "min_ms": 113.75021553039551,
+        "max_ms": 176.53045272827148
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_cpu_20261108_095706.csv",
+        "csv_sha256": "1cf1a6ef11752a2a0b0901b6e910c7e1e36ea022ccb6556d23c1ffef0522f6e8",
+        "json": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_cpu_20261108_095706_summary.json",
+        "json_sha256": "707d5ade019dd5132cafe04456693fe66ab369b08d89d9eccb9f720d5f37a4bf"
+      }
+    },
+    "gpu": {
+      "run_id": "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710",
+      "meta": {
+        "experiment": "labA_cpu_vs_gpu",
+        "variant": "pytorch_rocm_gpu",
+        "device": "cuda(gfx1100)",
+        "runtime": "pytorch-rocm",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "fp32",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "end-to-end per image (pre+infer+post), cuda-synced",
+        "extra": {},
+        "timestamp": "2026-11-08T09:57:10",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 14.429810028076172,
+        "p50_ms": 13.274538040161133,
+        "p95_ms": 26.069941234588622,
+        "min_ms": 12.500638961791992,
+        "max_ms": 26.652145385742188
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710.csv",
+        "csv_sha256": "1ae92403297b5fb5274052626069cbb7b8ca68512b584f90b3e2c3eeb852f420",
+        "json": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710_summary.json",
+        "json_sha256": "06fa25eb870f1164032d9cd2a0d1eb810d6f46a21d2cd74f8b5e36be2e8e23e5"
+      }
+    }
+  },
+  "labB": {
+    "pytorch_cpu": {
+      "run_id": "labB_runtime_cpu_pytorch_cpu_20261108_095721",
+      "meta": {
+        "experiment": "labB_runtime_cpu",
+        "variant": "pytorch_cpu",
+        "device": "cpu",
+        "runtime": "pytorch-rocm-cpu",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "fp32",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "",
+        "extra": {
+          "model_load_s": 0.074
+        },
+        "timestamp": "2026-11-08T09:57:21",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 156.25219020843505,
+        "p50_ms": 154.6403455734253,
+        "p95_ms": 183.56880455017085,
+        "min_ms": 113.85461616516113,
+        "max_ms": 205.47659492492676
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labB_runtime_cpu/labB_runtime_cpu_pytorch_cpu_20261108_095721.csv",
+        "csv_sha256": "889a6e734da14ddb3dc7287ec968715fa89fc563cb39d3273649bbfb5316c191",
+        "json": "results/raw/labB_runtime_cpu/labB_runtime_cpu_pytorch_cpu_20261108_095721_summary.json",
+        "json_sha256": "f220af29712a8fd8be9f7c51ac8679329c27bb85ec1bc372bba4fba7d6e92411"
+      }
+    },
+    "openvino_cpu": {
+      "run_id": "labB_runtime_cpu_openvino_cpu_20261108_095725",
+      "meta": {
+        "experiment": "labB_runtime_cpu",
+        "variant": "openvino_cpu",
+        "device": "cpu",
+        "runtime": "openvino-cpu",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "fp32",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "same CPU, same weights exported from same yolo26l.pt",
+        "extra": {
+          "first_load_and_compile_s": 0.395
+        },
+        "timestamp": "2026-11-08T09:57:25",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 49.951868782043455,
+        "p50_ms": 50.07912826538086,
+        "p95_ms": 75.40582342147827,
+        "min_ms": 24.66546058654785,
+        "max_ms": 75.87723731994629
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labB_runtime_cpu/labB_runtime_cpu_openvino_cpu_20261108_095725.csv",
+        "csv_sha256": "125c15b5b213875816fb5a6ac7a046e5ed1a3f5d9eba45d481b08dfa97eb1b85",
+        "json": "results/raw/labB_runtime_cpu/labB_runtime_cpu_openvino_cpu_20261108_095725_summary.json",
+        "json_sha256": "5d7166b677b8ce88031f2f80d12de08299267297eb7be03a499744f105c7c2ef"
+      }
+    },
+    "map": {
+      "pytorch": {
+        "map50_95": 0.6398394119695376,
+        "map50": 0.7961921147735365,
+        "map75": 0.6881819915430561
+      },
+      "openvino": {
+        "map50_95": 0.6349081347717388,
+        "map50": 0.7873415261532896,
+        "map75": 0.677512994809706
+      }
+    },
+    "cpu_threads": 2
+  },
+  "labC": {
+    "fp32": {
+      "run_id": "labC_int8_openvino_fp32_20261108_094602",
+      "meta": {
+        "experiment": "labC_int8",
+        "variant": "openvino_fp32",
+        "device": "cpu",
+        "runtime": "openvino-cpu",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "fp32",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "",
+        "extra": {},
+        "timestamp": "2026-11-08T09:46:02",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 50.15706649780273,
+        "p50_ms": 49.5045166015625,
+        "p95_ms": 77.27252101898193,
+        "min_ms": 24.579193115234375,
+        "max_ms": 79.61732482910156
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labC_int8/labC_int8_openvino_fp32_20261108_094602.csv",
+        "csv_sha256": "aafbb161cec5de88958d0509135fc1e482b476de62bf49813069131d9dfe9718",
+        "json": "results/raw/labC_int8/labC_int8_openvino_fp32_20261108_094602_summary.json",
+        "json_sha256": "301950e9d2fe01983883a04459eaa756b851f5abd5dde41079c04cb70d335322"
+      }
+    },
+    "int8": {
+      "run_id": "labC_int8_openvino_int8_20261108_094607",
+      "meta": {
+        "experiment": "labC_int8",
+        "variant": "openvino_int8",
+        "device": "cpu",
+        "runtime": "openvino-cpu",
+        "model": "yolo26l.pt (official, 80-class COCO det)",
+        "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+        "imgsz": 640,
+        "batch": 1,
+        "precision": "int8",
+        "warmup": 10,
+        "iters": 50,
+        "num_images": 0,
+        "notes": "",
+        "extra": {
+          "quantization_time_s": 0.2,
+          "calibration_images": 150,
+          "nncf_preset": "mixed"
+        },
+        "timestamp": "2026-11-08T09:46:07",
+        "cpu": "AMD EPYC 9334 32-Core Processor",
+        "gpu": "AMD Radeon Pro W7900D",
+        "env": {
+          "torch": "2.12.0+rocm7.14.1",
+          "hip": "7.14.60850",
+          "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+          "ultralytics": "8.4.207"
+        }
+      },
+      "stats": {
+        "n": 50,
+        "mean_ms": 35.8756644821167,
+        "p50_ms": 28.21322536468506,
+        "p95_ms": 66.62695970535277,
+        "min_ms": 18.173242568969727,
+        "max_ms": 68.82450866699219
+      },
+      "derived": {},
+      "evidence": {
+        "csv": "results/raw/labC_int8/labC_int8_openvino_int8_20261108_094607.csv",
+        "csv_sha256": "36a54a6c73a03897fe928a1b6e75101ac549a3b0e1a843ce9234ccc2be983e11",
+        "json": "results/raw/labC_int8/labC_int8_openvino_int8_20261108_094607_summary.json",
+        "json_sha256": "2729996aa306ea6e033343072a6ff751894839d8fbce8ff95579c9b1107724c1"
+      }
+    },
+    "size_mb": {
+      "fp32": 99.886514,
+      "int8": 26.389165
+    },
+    "map": {
+      "fp32": {
+        "map50_95": 0.6349081347717388,
+        "map50": 0.7873415261532896,
+        "map75": 0.677512994809706
+      },
+      "int8": {
+        "map50_95": 0.5681614386554623,
+        "map50": 0.7687615754085164,
+        "map75": 0.6283608394506005
+      }
+    },
+    "quantization_time_s": 0.2
+  },
+  "labD": {
+    "resolution": {
+      "640": {
+        "stats": {
+          "n": 50,
+          "mean_ms": 13.67044792175293,
+          "p50_ms": 13.158185005187988,
+          "p95_ms": 15.945368576049805,
+          "min_ms": 12.04747200012207,
+          "max_ms": 16.738672256469727
+        },
+        "map": {
+          "map50_95": 0.6398394119695376,
+          "map50": 0.7961921147735365,
+          "map75": 0.6881819915430561
+        },
+        "vram_gb": 0.3640775680541992
+      },
+      "512": {
+        "stats": {
+          "n": 50,
+          "mean_ms": 13.144284706115723,
+          "p50_ms": 12.46485424041748,
+          "p95_ms": 19.222809410095188,
+          "min_ms": 11.539552688598633,
+          "max_ms": 23.73259162902832
+        },
+        "map": {
+          "map50_95": 0.6159257590168178,
+          "map50": 0.7782643124005101,
+          "map75": 0.6659557636018262
+        },
+        "vram_gb": 0.32860612869262695
+      },
+      "summaries": [
+        "labD_resolution_imgsz640_20261108_095800",
+        "labD_resolution_imgsz512_20261108_095802"
+      ]
+    },
+    "batch": {
+      "1": {
+        "p50_ms": 10.219334602355957,
+        "throughput_img_s": 97.85372912336786
+      },
+      "8": {
+        "p50_batch_ms": 54.94093894958496,
+        "per_image_equivalent_ms": 6.86761736869812,
+        "throughput_img_s": 145.610907875837,
+        "note": "batch completion time / 8 is an equivalent cost, NOT a single-request latency"
+      },
+      "vram_gb": 1.1733975410461426,
+      "summaries": [
+        "labD_batch_batch1_forward_20261108_095817",
+        "labD_batch_batch8_forward_20261108_095819"
+      ]
+    }
+  },
+  "labE": {
+    "serial": {
+      "mode": "serial",
+      "n_images": 100,
+      "total_ms": 1383.401617050171,
+      "images_per_s": 72.28558848530923,
+      "e2e_p50_ms": 13.24901294708252,
+      "e2e_p95_ms": 15.892124366760253,
+      "e2e_note": "pipeline e2e is measured submit->result under a full burst, so it includes queue wait; serial e2e has no queue",
+      "infer_p50_ms": 10.328669548034668,
+      "pre_p50_ms": 2.1285009384155273,
+      "per_image": [
+        {
+          "i": 0,
+          "file": "000000005529.jpg",
+          "n_det": 2,
+          "load_ms": 2.38,
+          "pre_ms": 0.34,
+          "infer_ms": 10.37,
+          "post_ms": 0.7,
+          "e2e_ms": 13.79
+        },
+        {
+          "i": 1,
+          "file": "000000021167.jpg",
+          "n_det": 4,
+          "load_ms": 1.02,
+          "pre_ms": 0.33,
+          "infer_ms": 9.43,
+          "post_ms": 1.06,
+          "e2e_ms": 11.85
+        },
+        {
+          "i": 2,
+          "file": "000000022705.jpg",
+          "n_det": 7,
+          "load_ms": 1.59,
+          "pre_ms": 0.35,
+          "infer_ms": 10.38,
+          "post_ms": 0.73,
+          "e2e_ms": 13.04
+        },
+        {
+          "i": 3,
+          "file": "000000025228.jpg",
+          "n_det": 2,
+          "load_ms": 2.01,
+          "pre_ms": 0.34,
+          "infer_ms": 10.45,
+          "post_ms": 0.72,
+          "e2e_ms": 13.51
+        },
+        {
+          "i": 4,
+          "file": "000000027620.jpg",
+          "n_det": 6,
+          "load_ms": 1.65,
+          "pre_ms": 0.34,
+          "infer_ms": 10.57,
+          "post_ms": 0.74,
+          "e2e_ms": 13.3
+        },
+        {
+          "i": 5,
+          "file": "000000027768.jpg",
+          "n_det": 7,
+          "load_ms": 2.61,
+          "pre_ms": 2.12,
+          "infer_ms": 11.68,
+          "post_ms": 0.71,
+          "e2e_ms": 17.12
+        },
+        {
+          "i": 6,
+          "file": "000000039405.jpg",
+          "n_det": 12,
+          "load_ms": 1.72,
+          "pre_ms": 0.34,
+          "infer_ms": 10.4,
+          "post_ms": 0.71,
+          "e2e_ms": 13.16
+        },
+        {
+          "i": 7,
+          "file": "000000041990.jpg",
+          "n_det": 5,
+          "load_ms": 1.77,
+          "pre_ms": 0.33,
+          "infer_ms": 9.46,
+          "post_ms": 1.05,
+          "e2e_ms": 12.62
+        },
+        {
+          "i": 8,
+          "file": "000000042889.jpg",
+          "n_det": 3,
+          "load_ms": 1.3,
+          "pre_ms": 0.76,
+          "infer_ms": 10.29,
+          "post_ms": 0.71,
+          "e2e_ms": 13.05
+        },
+        {
+          "i": 9,
+          "file": "000000051738.jpg",
+          "n_det": 4,
+          "load_ms": 1.06,
+          "pre_ms": 0.74,
+          "infer_ms": 10.24,
+          "post_ms": 0.71,
+          "e2e_ms": 12.76
+        },
+        {
+          "i": 10,
+          "file": "000000059386.jpg",
+          "n_det": 9,
+          "load_ms": 1.9,
+          "pre_ms": 0.34,
+          "infer_ms": 10.44,
+          "post_ms": 0.71,
+          "e2e_ms": 13.38
+        },
+        {
+          "i": 11,
+          "file": "000000061418.jpg",
+          "n_det": 14,
+          "load_ms": 1.45,
+          "pre_ms": 0.35,
+          "infer_ms": 10.41,
+          "post_ms": 0.72,
+          "e2e_ms": 12.93
+        },
+        {
+          "i": 12,
+          "file": "000000064898.jpg",
+          "n_det": 4,
+          "load_ms": 1.98,
+          "pre_ms": 0.34,
+          "infer_ms": 10.41,
+          "post_ms": 0.72,
+          "e2e_ms": 13.46
+        },
+        {
+          "i": 13,
+          "file": "000000066771.jpg",
+          "n_det": 13,
+          "load_ms": 2.07,
+          "pre_ms": 0.34,
+          "infer_ms": 10.31,
+          "post_ms": 0.71,
+          "e2e_ms": 13.43
+        },
+        {
+          "i": 14,
+          "file": "000000075612.jpg",
+          "n_det": 18,
+          "load_ms": 1.62,
+          "pre_ms": 0.33,
+          "infer_ms": 9.45,
+          "post_ms": 1.06,
+          "e2e_ms": 12.46
+        },
+        {
+          "i": 15,
+          "file": "000000076731.jpg",
+          "n_det": 2,
+          "load_ms": 1.49,
+          "pre_ms": 0.33,
+          "infer_ms": 10.44,
+          "post_ms": 0.73,
+          "e2e_ms": 12.99
+        },
+        {
+          "i": 16,
+          "file": "000000083531.jpg",
+          "n_det": 25,
+          "load_ms": 1.21,
+          "pre_ms": 0.65,
+          "infer_ms": 10.34,
+          "post_ms": 0.71,
+          "e2e_ms": 12.9
+        },
+        {
+          "i": 17,
+          "file": "000000087144.jpg",
+          "n_det": 7,
+          "load_ms": 1.97,
+          "pre_ms": 0.34,
+          "infer_ms": 10.31,
+          "post_ms": 0.72,
+          "e2e_ms": 13.34
+        },
+        {
+          "i": 18,
+          "file": "000000088848.jpg",
+          "n_det": 12,
+          "load_ms": 3.25,
+          "pre_ms": 0.37,
+          "infer_ms": 11.67,
+          "post_ms": 0.73,
+          "e2e_ms": 16.02
+        },
+        {
+          "i": 19,
+          "file": "000000089648.jpg",
+          "n_det": 36,
+          "load_ms": 1.94,
+          "pre_ms": 0.33,
+          "infer_ms": 10.29,
+          "post_ms": 0.77,
+          "e2e_ms": 13.34
+        },
+        {
+          "i": 20,
+          "file": "000000092177.jpg",
+          "n_det": 1,
+          "load_ms": 1.78,
+          "pre_ms": 0.36,
+          "infer_ms": 11.72,
+          "post_ms": 0.7,
+          "e2e_ms": 14.57
+        },
+        {
+          "i": 21,
+          "file": "000000097278.jpg",
+          "n_det": 2,
+          "load_ms": 1.51,
+          "pre_ms": 0.36,
+          "infer_ms": 10.39,
+          "post_ms": 0.7,
+          "e2e_ms": 12.95
+        },
+        {
+          "i": 22,
+          "file": "000000098392.jpg",
+          "n_det": 13,
+          "load_ms": 1.46,
+          "pre_ms": 0.33,
+          "infer_ms": 9.48,
+          "post_ms": 1.02,
+          "e2e_ms": 12.29
+        },
+        {
+          "i": 23,
+          "file": "000000098520.jpg",
+          "n_det": 4,
+          "load_ms": 1.74,
+          "pre_ms": 0.34,
+          "infer_ms": 10.46,
+          "post_ms": 0.72,
+          "e2e_ms": 13.26
+        },
+        {
+          "i": 24,
+          "file": "000000106048.jpg",
+          "n_det": 1,
+          "load_ms": 1.88,
+          "pre_ms": 0.34,
+          "infer_ms": 10.44,
+          "post_ms": 0.73,
+          "e2e_ms": 13.39
+        },
+        {
+          "i": 25,
+          "file": "000000107554.jpg",
+          "n_det": 1,
+          "load_ms": 2.5,
+          "pre_ms": 0.34,
+          "infer_ms": 10.33,
+          "post_ms": 0.72,
+          "e2e_ms": 13.87
+        },
+        {
+          "i": 26,
+          "file": "000000121673.jpg",
+          "n_det": 2,
+          "load_ms": 1.39,
+          "pre_ms": 0.72,
+          "infer_ms": 9.56,
+          "post_ms": 1.03,
+          "e2e_ms": 12.71
+        },
+        {
+          "i": 27,
+          "file": "000000133418.jpg",
+          "n_det": 2,
+          "load_ms": 2.19,
+          "pre_ms": 0.35,
+          "infer_ms": 10.43,
+          "post_ms": 0.71,
+          "e2e_ms": 13.68
+        },
+        {
+          "i": 28,
+          "file": "000000134322.jpg",
+          "n_det": 13,
+          "load_ms": 1.65,
+          "pre_ms": 0.34,
+          "infer_ms": 10.32,
+          "post_ms": 0.74,
+          "e2e_ms": 13.05
+        },
+        {
+          "i": 29,
+          "file": "000000137727.jpg",
+          "n_det": 15,
+          "load_ms": 1.57,
+          "pre_ms": 0.32,
+          "infer_ms": 10.3,
+          "post_ms": 0.72,
+          "e2e_ms": 12.91
+        },
+        {
+          "i": 30,
+          "file": "000000147745.jpg",
+          "n_det": 2,
+          "load_ms": 2.13,
+          "pre_ms": 0.33,
+          "infer_ms": 10.38,
+          "post_ms": 0.7,
+          "e2e_ms": 13.54
+        },
+        {
+          "i": 31,
+          "file": "000000150649.jpg",
+          "n_det": 10,
+          "load_ms": 1.33,
+          "pre_ms": 0.67,
+          "infer_ms": 10.26,
+          "post_ms": 0.73,
+          "e2e_ms": 12.98
+        },
+        {
+          "i": 32,
+          "file": "000000154000.jpg",
+          "n_det": 3,
+          "load_ms": 2.0,
+          "pre_ms": 0.34,
+          "infer_ms": 10.29,
+          "post_ms": 0.71,
+          "e2e_ms": 13.33
+        },
+        {
+          "i": 33,
+          "file": "000000154213.jpg",
+          "n_det": 3,
+          "load_ms": 1.49,
+          "pre_ms": 0.76,
+          "infer_ms": 9.5,
+          "post_ms": 1.05,
+          "e2e_ms": 12.8
+        },
+        {
+          "i": 34,
+          "file": "000000156372.jpg",
+          "n_det": 3,
+          "load_ms": 1.01,
+          "pre_ms": 0.7,
+          "infer_ms": 10.35,
+          "post_ms": 0.72,
+          "e2e_ms": 12.78
+        },
+        {
+          "i": 35,
+          "file": "000000157138.jpg",
+          "n_det": 3,
+          "load_ms": 1.04,
+          "pre_ms": 0.72,
+          "infer_ms": 10.31,
+          "post_ms": 0.7,
+          "e2e_ms": 12.77
+        },
+        {
+          "i": 36,
+          "file": "000000163562.jpg",
+          "n_det": 2,
+          "load_ms": 1.03,
+          "pre_ms": 0.73,
+          "infer_ms": 10.4,
+          "post_ms": 0.72,
+          "e2e_ms": 12.88
+        },
+        {
+          "i": 37,
+          "file": "000000181666.jpg",
+          "n_det": 17,
+          "load_ms": 1.66,
+          "pre_ms": 0.34,
+          "infer_ms": 9.44,
+          "post_ms": 0.98,
+          "e2e_ms": 12.41
+        },
+        {
+          "i": 38,
+          "file": "000000186632.jpg",
+          "n_det": 11,
+          "load_ms": 1.99,
+          "pre_ms": 0.34,
+          "infer_ms": 10.33,
+          "post_ms": 0.74,
+          "e2e_ms": 13.4
+        },
+        {
+          "i": 39,
+          "file": "000000195754.jpg",
+          "n_det": 5,
+          "load_ms": 1.63,
+          "pre_ms": 0.34,
+          "infer_ms": 10.38,
+          "post_ms": 0.72,
+          "e2e_ms": 13.07
+        },
+        {
+          "i": 40,
+          "file": "000000197388.jpg",
+          "n_det": 9,
+          "load_ms": 1.87,
+          "pre_ms": 0.33,
+          "infer_ms": 10.27,
+          "post_ms": 0.75,
+          "e2e_ms": 13.23
+        },
+        {
+          "i": 41,
+          "file": "000000199236.jpg",
+          "n_det": 6,
+          "load_ms": 2.25,
+          "pre_ms": 0.34,
+          "infer_ms": 10.36,
+          "post_ms": 0.72,
+          "e2e_ms": 13.67
+        },
+        {
+          "i": 42,
+          "file": "000000201775.jpg",
+          "n_det": 4,
+          "load_ms": 1.42,
+          "pre_ms": 0.8,
+          "infer_ms": 10.44,
+          "post_ms": 0.74,
+          "e2e_ms": 13.41
+        },
+        {
+          "i": 43,
+          "file": "000000205647.jpg",
+          "n_det": 1,
+          "load_ms": 1.99,
+          "pre_ms": 0.34,
+          "infer_ms": 10.3,
+          "post_ms": 0.71,
+          "e2e_ms": 13.35
+        },
+        {
+          "i": 44,
+          "file": "000000206135.jpg",
+          "n_det": 5,
+          "load_ms": 1.09,
+          "pre_ms": 0.72,
+          "infer_ms": 10.18,
+          "post_ms": 0.69,
+          "e2e_ms": 12.68
+        },
+        {
+          "i": 45,
+          "file": "000000206411.jpg",
+          "n_det": 2,
+          "load_ms": 1.41,
+          "pre_ms": 0.33,
+          "infer_ms": 10.33,
+          "post_ms": 0.7,
+          "e2e_ms": 12.77
+        },
+        {
+          "i": 46,
+          "file": "000000207306.jpg",
+          "n_det": 5,
+          "load_ms": 1.43,
+          "pre_ms": 0.77,
+          "infer_ms": 10.31,
+          "post_ms": 0.71,
+          "e2e_ms": 13.21
+        },
+        {
+          "i": 47,
+          "file": "000000210299.jpg",
+          "n_det": 2,
+          "load_ms": 2.58,
+          "pre_ms": 0.34,
+          "infer_ms": 10.26,
+          "post_ms": 0.7,
+          "e2e_ms": 13.88
+        },
+        {
+          "i": 48,
+          "file": "000000214205.jpg",
+          "n_det": 1,
+          "load_ms": 1.64,
+          "pre_ms": 0.33,
+          "infer_ms": 10.3,
+          "post_ms": 0.72,
+          "e2e_ms": 12.98
+        },
+        {
+          "i": 49,
+          "file": "000000215259.jpg",
+          "n_det": 8,
+          "load_ms": 1.11,
+          "pre_ms": 0.72,
+          "infer_ms": 10.24,
+          "post_ms": 0.71,
+          "e2e_ms": 12.79
+        },
+        {
+          "i": 50,
+          "file": "000000219440.jpg",
+          "n_det": 4,
+          "load_ms": 1.35,
+          "pre_ms": 0.33,
+          "infer_ms": 10.32,
+          "post_ms": 0.73,
+          "e2e_ms": 12.74
+        },
+        {
+          "i": 51,
+          "file": "000000219578.jpg",
+          "n_det": 3,
+          "load_ms": 2.52,
+          "pre_ms": 0.35,
+          "infer_ms": 9.62,
+          "post_ms": 1.07,
+          "e2e_ms": 13.57
+        },
+        {
+          "i": 52,
+          "file": "000000230008.jpg",
+          "n_det": 3,
+          "load_ms": 2.14,
+          "pre_ms": 0.34,
+          "infer_ms": 10.29,
+          "post_ms": 0.7,
+          "e2e_ms": 13.47
+        },
+        {
+          "i": 53,
+          "file": "000000230166.jpg",
+          "n_det": 10,
+          "load_ms": 2.39,
+          "pre_ms": 0.34,
+          "infer_ms": 10.32,
+          "post_ms": 0.71,
+          "e2e_ms": 13.75
+        },
+        {
+          "i": 54,
+          "file": "000000231549.jpg",
+          "n_det": 4,
+          "load_ms": 1.84,
+          "pre_ms": 0.33,
+          "infer_ms": 10.33,
+          "post_ms": 0.75,
+          "e2e_ms": 13.25
+        },
+        {
+          "i": 55,
+          "file": "000000247917.jpg",
+          "n_det": 21,
+          "load_ms": 2.21,
+          "pre_ms": 0.97,
+          "infer_ms": 11.69,
+          "post_ms": 0.73,
+          "e2e_ms": 15.61
+        },
+        {
+          "i": 56,
+          "file": "000000249180.jpg",
+          "n_det": 3,
+          "load_ms": 2.34,
+          "pre_ms": 0.34,
+          "infer_ms": 10.35,
+          "post_ms": 0.74,
+          "e2e_ms": 13.77
+        },
+        {
+          "i": 57,
+          "file": "000000249643.jpg",
+          "n_det": 2,
+          "load_ms": 2.5,
+          "pre_ms": 0.35,
+          "infer_ms": 10.32,
+          "post_ms": 0.72,
+          "e2e_ms": 13.89
+        },
+        {
+          "i": 58,
+          "file": "000000252294.jpg",
+          "n_det": 4,
+          "load_ms": 1.59,
+          "pre_ms": 0.76,
+          "infer_ms": 10.34,
+          "post_ms": 0.7,
+          "e2e_ms": 13.4
+        },
+        {
+          "i": 59,
+          "file": "000000252776.jpg",
+          "n_det": 5,
+          "load_ms": 1.58,
+          "pre_ms": 0.33,
+          "infer_ms": 10.31,
+          "post_ms": 0.69,
+          "e2e_ms": 12.92
+        },
+        {
+          "i": 60,
+          "file": "000000255718.jpg",
+          "n_det": 2,
+          "load_ms": 2.74,
+          "pre_ms": 0.34,
+          "infer_ms": 10.3,
+          "post_ms": 0.77,
+          "e2e_ms": 14.14
+        },
+        {
+          "i": 61,
+          "file": "000000260657.jpg",
+          "n_det": 0,
+          "load_ms": 1.05,
+          "pre_ms": 0.64,
+          "infer_ms": 10.28,
+          "post_ms": 0.33,
+          "e2e_ms": 12.3
+        },
+        {
+          "i": 62,
+          "file": "000000262938.jpg",
+          "n_det": 3,
+          "load_ms": 2.1,
+          "pre_ms": 0.34,
+          "infer_ms": 10.32,
+          "post_ms": 0.72,
+          "e2e_ms": 13.48
+        },
+        {
+          "i": 63,
+          "file": "000000263068.jpg",
+          "n_det": 2,
+          "load_ms": 1.06,
+          "pre_ms": 0.7,
+          "infer_ms": 10.37,
+          "post_ms": 0.75,
+          "e2e_ms": 12.88
+        },
+        {
+          "i": 64,
+          "file": "000000263299.jpg",
+          "n_det": 3,
+          "load_ms": 1.41,
+          "pre_ms": 0.71,
+          "infer_ms": 10.4,
+          "post_ms": 0.7,
+          "e2e_ms": 13.21
+        },
+        {
+          "i": 65,
+          "file": "000000274272.jpg",
+          "n_det": 9,
+          "load_ms": 2.48,
+          "pre_ms": 0.34,
+          "infer_ms": 10.39,
+          "post_ms": 0.72,
+          "e2e_ms": 13.93
+        },
+        {
+          "i": 66,
+          "file": "000000278749.jpg",
+          "n_det": 13,
+          "load_ms": 1.16,
+          "pre_ms": 0.72,
+          "infer_ms": 10.31,
+          "post_ms": 0.74,
+          "e2e_ms": 12.93
+        },
+        {
+          "i": 67,
+          "file": "000000297085.jpg",
+          "n_det": 7,
+          "load_ms": 1.34,
+          "pre_ms": 0.73,
+          "infer_ms": 10.34,
+          "post_ms": 0.7,
+          "e2e_ms": 13.11
+        },
+        {
+          "i": 68,
+          "file": "000000297578.jpg",
+          "n_det": 7,
+          "load_ms": 0.82,
+          "pre_ms": 0.63,
+          "infer_ms": 10.27,
+          "post_ms": 0.7,
+          "e2e_ms": 12.42
+        },
+        {
+          "i": 69,
+          "file": "000000307145.jpg",
+          "n_det": 3,
+          "load_ms": 0.69,
+          "pre_ms": 0.7,
+          "infer_ms": 10.3,
+          "post_ms": 0.7,
+          "e2e_ms": 12.38
+        },
+        {
+          "i": 70,
+          "file": "000000319617.jpg",
+          "n_det": 4,
+          "load_ms": 0.51,
+          "pre_ms": 0.64,
+          "infer_ms": 9.45,
+          "post_ms": 1.03,
+          "e2e_ms": 11.63
+        },
+        {
+          "i": 71,
+          "file": "000000322895.jpg",
+          "n_det": 9,
+          "load_ms": 1.3,
+          "pre_ms": 0.34,
+          "infer_ms": 57.72,
+          "post_ms": 1.85,
+          "e2e_ms": 61.22
+        },
+        {
+          "i": 72,
+          "file": "000000326128.jpg",
+          "n_det": 3,
+          "load_ms": 1.72,
+          "pre_ms": 0.43,
+          "infer_ms": 13.34,
+          "post_ms": 0.75,
+          "e2e_ms": 16.24
+        },
+        {
+          "i": 73,
+          "file": "000000337055.jpg",
+          "n_det": 2,
+          "load_ms": 1.87,
+          "pre_ms": 0.35,
+          "infer_ms": 11.38,
+          "post_ms": 0.84,
+          "e2e_ms": 14.44
+        },
+        {
+          "i": 74,
+          "file": "000000341681.jpg",
+          "n_det": 3,
+          "load_ms": 1.28,
+          "pre_ms": 0.35,
+          "infer_ms": 9.59,
+          "post_ms": 1.06,
+          "e2e_ms": 12.27
+        },
+        {
+          "i": 75,
+          "file": "000000343803.jpg",
+          "n_det": 2,
+          "load_ms": 1.74,
+          "pre_ms": 0.35,
+          "infer_ms": 11.08,
+          "post_ms": 0.75,
+          "e2e_ms": 13.93
+        },
+        {
+          "i": 76,
+          "file": "000000343976.jpg",
+          "n_det": 4,
+          "load_ms": 1.26,
+          "pre_ms": 0.75,
+          "infer_ms": 10.75,
+          "post_ms": 0.75,
+          "e2e_ms": 13.51
+        },
+        {
+          "i": 77,
+          "file": "000000346638.jpg",
+          "n_det": 7,
+          "load_ms": 1.56,
+          "pre_ms": 0.34,
+          "infer_ms": 9.52,
+          "post_ms": 1.03,
+          "e2e_ms": 12.46
+        },
+        {
+          "i": 78,
+          "file": "000000350833.jpg",
+          "n_det": 3,
+          "load_ms": 1.89,
+          "pre_ms": 0.34,
+          "infer_ms": 9.45,
+          "post_ms": 1.03,
+          "e2e_ms": 12.7
+        },
+        {
+          "i": 79,
+          "file": "000000358427.jpg",
+          "n_det": 3,
+          "load_ms": 2.38,
+          "pre_ms": 0.34,
+          "infer_ms": 10.4,
+          "post_ms": 0.71,
+          "e2e_ms": 13.83
+        },
+        {
+          "i": 80,
+          "file": "000000359833.jpg",
+          "n_det": 5,
+          "load_ms": 1.61,
+          "pre_ms": 0.34,
+          "infer_ms": 10.31,
+          "post_ms": 0.73,
+          "e2e_ms": 12.99
+        },
+        {
+          "i": 81,
+          "file": "000000360137.jpg",
+          "n_det": 4,
+          "load_ms": 3.12,
+          "pre_ms": 0.36,
+          "infer_ms": 11.65,
+          "post_ms": 0.76,
+          "e2e_ms": 15.89
+        },
+        {
+          "i": 82,
+          "file": "000000360325.jpg",
+          "n_det": 11,
+          "load_ms": 1.88,
+          "pre_ms": 0.34,
+          "infer_ms": 10.3,
+          "post_ms": 0.74,
+          "e2e_ms": 13.25
+        },
+        {
+          "i": 83,
+          "file": "000000364636.jpg",
+          "n_det": 1,
+          "load_ms": 2.68,
+          "pre_ms": 0.35,
+          "infer_ms": 10.93,
+          "post_ms": 0.74,
+          "e2e_ms": 14.7
+        },
+        {
+          "i": 84,
+          "file": "000000374551.jpg",
+          "n_det": 1,
+          "load_ms": 1.16,
+          "pre_ms": 0.67,
+          "infer_ms": 10.61,
+          "post_ms": 0.7,
+          "e2e_ms": 13.14
+        },
+        {
+          "i": 85,
+          "file": "000000377486.jpg",
+          "n_det": 7,
+          "load_ms": 1.95,
+          "pre_ms": 0.34,
+          "infer_ms": 10.4,
+          "post_ms": 0.71,
+          "e2e_ms": 13.39
+        },
+        {
+          "i": 86,
+          "file": "000000378453.jpg",
+          "n_det": 10,
+          "load_ms": 1.13,
+          "pre_ms": 0.72,
+          "infer_ms": 9.5,
+          "post_ms": 1.02,
+          "e2e_ms": 12.37
+        },
+        {
+          "i": 87,
+          "file": "000000397681.jpg",
+          "n_det": 36,
+          "load_ms": 3.07,
+          "pre_ms": 0.37,
+          "infer_ms": 11.7,
+          "post_ms": 0.81,
+          "e2e_ms": 15.95
+        },
+        {
+          "i": 88,
+          "file": "000000400573.jpg",
+          "n_det": 2,
+          "load_ms": 2.36,
+          "pre_ms": 0.34,
+          "infer_ms": 10.45,
+          "post_ms": 0.76,
+          "e2e_ms": 13.91
+        },
+        {
+          "i": 89,
+          "file": "000000400803.jpg",
+          "n_det": 2,
+          "load_ms": 2.29,
+          "pre_ms": 0.34,
+          "infer_ms": 10.4,
+          "post_ms": 0.73,
+          "e2e_ms": 13.77
+        },
+        {
+          "i": 90,
+          "file": "000000401250.jpg",
+          "n_det": 2,
+          "load_ms": 0.74,
+          "pre_ms": 0.32,
+          "infer_ms": 10.69,
+          "post_ms": 0.7,
+          "e2e_ms": 12.45
+        },
+        {
+          "i": 91,
+          "file": "000000406570.jpg",
+          "n_det": 8,
+          "load_ms": 1.24,
+          "pre_ms": 0.33,
+          "infer_ms": 10.38,
+          "post_ms": 0.75,
+          "e2e_ms": 12.7
+        },
+        {
+          "i": 92,
+          "file": "000000426372.jpg",
+          "n_det": 3,
+          "load_ms": 2.14,
+          "pre_ms": 0.34,
+          "infer_ms": 10.36,
+          "post_ms": 0.69,
+          "e2e_ms": 13.53
+        },
+        {
+          "i": 93,
+          "file": "000000430875.jpg",
+          "n_det": 3,
+          "load_ms": 0.96,
+          "pre_ms": 0.79,
+          "infer_ms": 10.31,
+          "post_ms": 0.74,
+          "e2e_ms": 12.79
+        },
+        {
+          "i": 94,
+          "file": "000000436883.jpg",
+          "n_det": 5,
+          "load_ms": 2.27,
+          "pre_ms": 0.34,
+          "infer_ms": 10.35,
+          "post_ms": 0.72,
+          "e2e_ms": 13.68
+        },
+        {
+          "i": 95,
+          "file": "000000437351.jpg",
+          "n_det": 4,
+          "load_ms": 1.63,
+          "pre_ms": 0.8,
+          "infer_ms": 10.65,
+          "post_ms": 0.71,
+          "e2e_ms": 13.79
+        },
+        {
+          "i": 96,
+          "file": "000000439994.jpg",
+          "n_det": 8,
+          "load_ms": 2.05,
+          "pre_ms": 0.34,
+          "infer_ms": 10.25,
+          "post_ms": 0.73,
+          "e2e_ms": 13.36
+        },
+        {
+          "i": 97,
+          "file": "000000466602.jpg",
+          "n_det": 3,
+          "load_ms": 2.33,
+          "pre_ms": 0.34,
+          "infer_ms": 10.3,
+          "post_ms": 0.71,
+          "e2e_ms": 13.67
+        },
+        {
+          "i": 98,
+          "file": "000000473118.jpg",
+          "n_det": 3,
+          "load_ms": 1.23,
+          "pre_ms": 0.72,
+          "infer_ms": 10.3,
+          "post_ms": 0.7,
+          "e2e_ms": 12.95
+        },
+        {
+          "i": 99,
+          "file": "000000477805.jpg",
+          "n_det": 2,
+          "load_ms": 0.72,
+          "pre_ms": 0.33,
+          "infer_ms": 10.2,
+          "post_ms": 0.74,
+          "e2e_ms": 11.99
+        }
+      ]
+    },
+    "pipeline": {
+      "mode": "async_pipeline",
+      "n_images": 100,
+      "total_ms": 1144.7281913757324,
+      "images_per_s": 87.35698199222313,
+      "e2e_p50_ms": 578.8096513748169,
+      "e2e_p95_ms": 1088.8834854125976,
+      "e2e_note": "pipeline e2e is measured submit->result under a full burst, so it includes queue wait; serial e2e has no queue",
+      "infer_p50_ms": 10.516702651977539,
+      "pre_p50_ms": 2.89583683013916,
+      "per_image": [
+        {
+          "i": 0,
+          "file": "000000005529.jpg",
+          "n_det": 2,
+          "load_ms": 3.35,
+          "pre_ms": 0.65,
+          "infer_ms": 11.23,
+          "post_ms": 0.78,
+          "e2e_ms": 16.22
+        },
+        {
+          "i": 1,
+          "file": "000000021167.jpg",
+          "n_det": 4,
+          "load_ms": 1.75,
+          "pre_ms": 0.36,
+          "infer_ms": 10.2,
+          "post_ms": 0.99,
+          "e2e_ms": 27.42
+        },
+        {
+          "i": 2,
+          "file": "000000022705.jpg",
+          "n_det": 7,
+          "load_ms": 2.46,
+          "pre_ms": 0.83,
+          "infer_ms": 10.68,
+          "post_ms": 0.75,
+          "e2e_ms": 38.87
+        },
+        {
+          "i": 3,
+          "file": "000000025228.jpg",
+          "n_det": 2,
+          "load_ms": 1.99,
+          "pre_ms": 0.33,
+          "infer_ms": 10.48,
+          "post_ms": 0.76,
+          "e2e_ms": 50.13
+        },
+        {
+          "i": 4,
+          "file": "000000027620.jpg",
+          "n_det": 6,
+          "load_ms": 1.63,
+          "pre_ms": 0.29,
+          "infer_ms": 10.54,
+          "post_ms": 0.78,
+          "e2e_ms": 61.47
+        },
+        {
+          "i": 5,
+          "file": "000000027768.jpg",
+          "n_det": 7,
+          "load_ms": 2.97,
+          "pre_ms": 2.34,
+          "infer_ms": 11.84,
+          "post_ms": 0.77,
+          "e2e_ms": 74.1
+        },
+        {
+          "i": 6,
+          "file": "000000039405.jpg",
+          "n_det": 12,
+          "load_ms": 1.7,
+          "pre_ms": 0.29,
+          "infer_ms": 10.56,
+          "post_ms": 0.78,
+          "e2e_ms": 85.46
+        },
+        {
+          "i": 7,
+          "file": "000000041990.jpg",
+          "n_det": 5,
+          "load_ms": 1.77,
+          "pre_ms": 0.55,
+          "infer_ms": 9.64,
+          "post_ms": 1.03,
+          "e2e_ms": 96.15
+        },
+        {
+          "i": 8,
+          "file": "000000042889.jpg",
+          "n_det": 3,
+          "load_ms": 1.26,
+          "pre_ms": 1.54,
+          "infer_ms": 10.53,
+          "post_ms": 0.78,
+          "e2e_ms": 107.49
+        },
+        {
+          "i": 9,
+          "file": "000000051738.jpg",
+          "n_det": 4,
+          "load_ms": 1.03,
+          "pre_ms": 1.1,
+          "infer_ms": 10.46,
+          "post_ms": 0.77,
+          "e2e_ms": 118.74
+        },
+        {
+          "i": 10,
+          "file": "000000059386.jpg",
+          "n_det": 9,
+          "load_ms": 1.9,
+          "pre_ms": 1.36,
+          "infer_ms": 10.43,
+          "post_ms": 0.78,
+          "e2e_ms": 129.96
+        },
+        {
+          "i": 11,
+          "file": "000000061418.jpg",
+          "n_det": 14,
+          "load_ms": 1.79,
+          "pre_ms": 0.88,
+          "infer_ms": 10.6,
+          "post_ms": 0.79,
+          "e2e_ms": 141.36
+        },
+        {
+          "i": 12,
+          "file": "000000064898.jpg",
+          "n_det": 4,
+          "load_ms": 2.32,
+          "pre_ms": 0.8,
+          "infer_ms": 10.48,
+          "post_ms": 0.82,
+          "e2e_ms": 152.68
+        },
+        {
+          "i": 13,
+          "file": "000000066771.jpg",
+          "n_det": 13,
+          "load_ms": 2.5,
+          "pre_ms": 0.71,
+          "infer_ms": 10.61,
+          "post_ms": 0.75,
+          "e2e_ms": 164.05
+        },
+        {
+          "i": 14,
+          "file": "000000075612.jpg",
+          "n_det": 18,
+          "load_ms": 2.02,
+          "pre_ms": 0.8,
+          "infer_ms": 9.56,
+          "post_ms": 1.09,
+          "e2e_ms": 174.73
+        },
+        {
+          "i": 15,
+          "file": "000000076731.jpg",
+          "n_det": 2,
+          "load_ms": 2.06,
+          "pre_ms": 0.76,
+          "infer_ms": 10.85,
+          "post_ms": 0.75,
+          "e2e_ms": 186.35
+        },
+        {
+          "i": 16,
+          "file": "000000083531.jpg",
+          "n_det": 25,
+          "load_ms": 1.24,
+          "pre_ms": 1.77,
+          "infer_ms": 10.54,
+          "post_ms": 0.79,
+          "e2e_ms": 197.7
+        },
+        {
+          "i": 17,
+          "file": "000000087144.jpg",
+          "n_det": 7,
+          "load_ms": 2.19,
+          "pre_ms": 0.72,
+          "infer_ms": 10.45,
+          "post_ms": 0.78,
+          "e2e_ms": 208.94
+        },
+        {
+          "i": 18,
+          "file": "000000088848.jpg",
+          "n_det": 12,
+          "load_ms": 4.45,
+          "pre_ms": 0.46,
+          "infer_ms": 11.78,
+          "post_ms": 0.77,
+          "e2e_ms": 221.5
+        },
+        {
+          "i": 19,
+          "file": "000000089648.jpg",
+          "n_det": 36,
+          "load_ms": 1.96,
+          "pre_ms": 0.83,
+          "infer_ms": 10.53,
+          "post_ms": 0.78,
+          "e2e_ms": 232.84
+        },
+        {
+          "i": 20,
+          "file": "000000092177.jpg",
+          "n_det": 1,
+          "load_ms": 2.9,
+          "pre_ms": 1.29,
+          "infer_ms": 11.77,
+          "post_ms": 0.78,
+          "e2e_ms": 245.42
+        },
+        {
+          "i": 21,
+          "file": "000000097278.jpg",
+          "n_det": 2,
+          "load_ms": 1.51,
+          "pre_ms": 0.37,
+          "infer_ms": 10.53,
+          "post_ms": 0.81,
+          "e2e_ms": 256.77
+        },
+        {
+          "i": 22,
+          "file": "000000098392.jpg",
+          "n_det": 13,
+          "load_ms": 1.45,
+          "pre_ms": 0.6,
+          "infer_ms": 9.62,
+          "post_ms": 1.06,
+          "e2e_ms": 267.47
+        },
+        {
+          "i": 23,
+          "file": "000000098520.jpg",
+          "n_det": 4,
+          "load_ms": 2.0,
+          "pre_ms": 1.53,
+          "infer_ms": 10.48,
+          "post_ms": 0.8,
+          "e2e_ms": 278.76
+        },
+        {
+          "i": 24,
+          "file": "000000106048.jpg",
+          "n_det": 1,
+          "load_ms": 2.22,
+          "pre_ms": 0.72,
+          "infer_ms": 10.47,
+          "post_ms": 0.79,
+          "e2e_ms": 290.04
+        },
+        {
+          "i": 25,
+          "file": "000000107554.jpg",
+          "n_det": 1,
+          "load_ms": 2.91,
+          "pre_ms": 1.79,
+          "infer_ms": 10.39,
+          "post_ms": 0.77,
+          "e2e_ms": 301.22
+        },
+        {
+          "i": 26,
+          "file": "000000121673.jpg",
+          "n_det": 2,
+          "load_ms": 1.66,
+          "pre_ms": 1.5,
+          "infer_ms": 9.64,
+          "post_ms": 1.02,
+          "e2e_ms": 311.9
+        },
+        {
+          "i": 27,
+          "file": "000000133418.jpg",
+          "n_det": 2,
+          "load_ms": 2.1,
+          "pre_ms": 0.81,
+          "infer_ms": 10.52,
+          "post_ms": 0.81,
+          "e2e_ms": 323.27
+        },
+        {
+          "i": 28,
+          "file": "000000134322.jpg",
+          "n_det": 13,
+          "load_ms": 2.07,
+          "pre_ms": 0.85,
+          "infer_ms": 10.48,
+          "post_ms": 0.81,
+          "e2e_ms": 334.58
+        },
+        {
+          "i": 29,
+          "file": "000000137727.jpg",
+          "n_det": 15,
+          "load_ms": 1.75,
+          "pre_ms": 1.07,
+          "infer_ms": 10.6,
+          "post_ms": 0.78,
+          "e2e_ms": 345.97
+        },
+        {
+          "i": 30,
+          "file": "000000147745.jpg",
+          "n_det": 2,
+          "load_ms": 2.61,
+          "pre_ms": 1.06,
+          "infer_ms": 10.53,
+          "post_ms": 0.82,
+          "e2e_ms": 357.34
+        },
+        {
+          "i": 31,
+          "file": "000000150649.jpg",
+          "n_det": 10,
+          "load_ms": 1.73,
+          "pre_ms": 1.91,
+          "infer_ms": 10.63,
+          "post_ms": 0.77,
+          "e2e_ms": 368.75
+        },
+        {
+          "i": 32,
+          "file": "000000154000.jpg",
+          "n_det": 3,
+          "load_ms": 2.16,
+          "pre_ms": 0.68,
+          "infer_ms": 10.45,
+          "post_ms": 0.76,
+          "e2e_ms": 379.98
+        },
+        {
+          "i": 33,
+          "file": "000000154213.jpg",
+          "n_det": 3,
+          "load_ms": 1.5,
+          "pre_ms": 2.31,
+          "infer_ms": 9.65,
+          "post_ms": 1.08,
+          "e2e_ms": 390.72
+        },
+        {
+          "i": 34,
+          "file": "000000156372.jpg",
+          "n_det": 3,
+          "load_ms": 0.97,
+          "pre_ms": 1.03,
+          "infer_ms": 10.69,
+          "post_ms": 0.76,
+          "e2e_ms": 402.19
+        },
+        {
+          "i": 35,
+          "file": "000000157138.jpg",
+          "n_det": 3,
+          "load_ms": 1.05,
+          "pre_ms": 1.14,
+          "infer_ms": 10.51,
+          "post_ms": 0.81,
+          "e2e_ms": 413.52
+        },
+        {
+          "i": 36,
+          "file": "000000163562.jpg",
+          "n_det": 2,
+          "load_ms": 1.02,
+          "pre_ms": 1.02,
+          "infer_ms": 10.61,
+          "post_ms": 0.9,
+          "e2e_ms": 425.06
+        },
+        {
+          "i": 37,
+          "file": "000000181666.jpg",
+          "n_det": 17,
+          "load_ms": 1.66,
+          "pre_ms": 1.28,
+          "infer_ms": 9.79,
+          "post_ms": 1.12,
+          "e2e_ms": 435.98
+        },
+        {
+          "i": 38,
+          "file": "000000186632.jpg",
+          "n_det": 11,
+          "load_ms": 2.62,
+          "pre_ms": 0.97,
+          "infer_ms": 10.68,
+          "post_ms": 0.79,
+          "e2e_ms": 447.45
+        },
+        {
+          "i": 39,
+          "file": "000000195754.jpg",
+          "n_det": 5,
+          "load_ms": 1.6,
+          "pre_ms": 1.07,
+          "infer_ms": 10.48,
+          "post_ms": 0.79,
+          "e2e_ms": 458.73
+        },
+        {
+          "i": 40,
+          "file": "000000197388.jpg",
+          "n_det": 9,
+          "load_ms": 1.86,
+          "pre_ms": 0.8,
+          "infer_ms": 10.51,
+          "post_ms": 0.84,
+          "e2e_ms": 470.1
+        },
+        {
+          "i": 41,
+          "file": "000000199236.jpg",
+          "n_det": 6,
+          "load_ms": 2.58,
+          "pre_ms": 1.06,
+          "infer_ms": 10.8,
+          "post_ms": 0.81,
+          "e2e_ms": 481.72
+        },
+        {
+          "i": 42,
+          "file": "000000201775.jpg",
+          "n_det": 4,
+          "load_ms": 1.43,
+          "pre_ms": 1.57,
+          "infer_ms": 10.59,
+          "post_ms": 0.86,
+          "e2e_ms": 493.19
+        },
+        {
+          "i": 43,
+          "file": "000000205647.jpg",
+          "n_det": 1,
+          "load_ms": 1.97,
+          "pre_ms": 1.22,
+          "infer_ms": 10.41,
+          "post_ms": 0.85,
+          "e2e_ms": 504.47
+        },
+        {
+          "i": 44,
+          "file": "000000206135.jpg",
+          "n_det": 5,
+          "load_ms": 1.06,
+          "pre_ms": 1.52,
+          "infer_ms": 10.43,
+          "post_ms": 0.87,
+          "e2e_ms": 515.78
+        },
+        {
+          "i": 45,
+          "file": "000000206411.jpg",
+          "n_det": 2,
+          "load_ms": 1.49,
+          "pre_ms": 0.53,
+          "infer_ms": 10.59,
+          "post_ms": 0.8,
+          "e2e_ms": 527.19
+        },
+        {
+          "i": 46,
+          "file": "000000207306.jpg",
+          "n_det": 5,
+          "load_ms": 1.4,
+          "pre_ms": 1.82,
+          "infer_ms": 10.6,
+          "post_ms": 0.83,
+          "e2e_ms": 538.63
+        },
+        {
+          "i": 47,
+          "file": "000000210299.jpg",
+          "n_det": 2,
+          "load_ms": 2.58,
+          "pre_ms": 0.65,
+          "infer_ms": 10.49,
+          "post_ms": 0.78,
+          "e2e_ms": 549.93
+        },
+        {
+          "i": 48,
+          "file": "000000214205.jpg",
+          "n_det": 1,
+          "load_ms": 2.02,
+          "pre_ms": 0.73,
+          "infer_ms": 10.71,
+          "post_ms": 0.91,
+          "e2e_ms": 561.56
+        },
+        {
+          "i": 49,
+          "file": "000000215259.jpg",
+          "n_det": 8,
+          "load_ms": 1.09,
+          "pre_ms": 1.71,
+          "infer_ms": 10.67,
+          "post_ms": 0.79,
+          "e2e_ms": 573.05
+        },
+        {
+          "i": 50,
+          "file": "000000219440.jpg",
+          "n_det": 4,
+          "load_ms": 1.34,
+          "pre_ms": 0.83,
+          "infer_ms": 10.73,
+          "post_ms": 0.77,
+          "e2e_ms": 584.57
+        },
+        {
+          "i": 51,
+          "file": "000000219578.jpg",
+          "n_det": 3,
+          "load_ms": 2.87,
+          "pre_ms": 1.08,
+          "infer_ms": 9.61,
+          "post_ms": 1.08,
+          "e2e_ms": 595.28
+        },
+        {
+          "i": 52,
+          "file": "000000230008.jpg",
+          "n_det": 3,
+          "load_ms": 2.12,
+          "pre_ms": 0.77,
+          "infer_ms": 10.57,
+          "post_ms": 0.81,
+          "e2e_ms": 606.68
+        },
+        {
+          "i": 53,
+          "file": "000000230166.jpg",
+          "n_det": 10,
+          "load_ms": 3.0,
+          "pre_ms": 0.96,
+          "infer_ms": 10.48,
+          "post_ms": 0.79,
+          "e2e_ms": 617.96
+        },
+        {
+          "i": 54,
+          "file": "000000231549.jpg",
+          "n_det": 4,
+          "load_ms": 2.28,
+          "pre_ms": 0.62,
+          "infer_ms": 10.52,
+          "post_ms": 0.86,
+          "e2e_ms": 629.35
+        },
+        {
+          "i": 55,
+          "file": "000000247917.jpg",
+          "n_det": 21,
+          "load_ms": 3.27,
+          "pre_ms": 1.99,
+          "infer_ms": 11.73,
+          "post_ms": 0.88,
+          "e2e_ms": 641.99
+        },
+        {
+          "i": 56,
+          "file": "000000249180.jpg",
+          "n_det": 3,
+          "load_ms": 2.28,
+          "pre_ms": 0.73,
+          "infer_ms": 10.48,
+          "post_ms": 0.79,
+          "e2e_ms": 653.31
+        },
+        {
+          "i": 57,
+          "file": "000000249643.jpg",
+          "n_det": 2,
+          "load_ms": 2.49,
+          "pre_ms": 0.62,
+          "infer_ms": 10.51,
+          "post_ms": 0.75,
+          "e2e_ms": 664.58
+        },
+        {
+          "i": 58,
+          "file": "000000252294.jpg",
+          "n_det": 4,
+          "load_ms": 1.59,
+          "pre_ms": 1.17,
+          "infer_ms": 10.37,
+          "post_ms": 0.93,
+          "e2e_ms": 675.89
+        },
+        {
+          "i": 59,
+          "file": "000000252776.jpg",
+          "n_det": 5,
+          "load_ms": 1.59,
+          "pre_ms": 0.51,
+          "infer_ms": 10.44,
+          "post_ms": 0.9,
+          "e2e_ms": 687.24
+        },
+        {
+          "i": 60,
+          "file": "000000255718.jpg",
+          "n_det": 2,
+          "load_ms": 2.86,
+          "pre_ms": 1.64,
+          "infer_ms": 10.36,
+          "post_ms": 0.87,
+          "e2e_ms": 698.48
+        },
+        {
+          "i": 61,
+          "file": "000000260657.jpg",
+          "n_det": 0,
+          "load_ms": 1.03,
+          "pre_ms": 0.86,
+          "infer_ms": 10.63,
+          "post_ms": 0.43,
+          "e2e_ms": 709.56
+        },
+        {
+          "i": 62,
+          "file": "000000262938.jpg",
+          "n_det": 3,
+          "load_ms": 2.74,
+          "pre_ms": 0.95,
+          "infer_ms": 10.62,
+          "post_ms": 0.81,
+          "e2e_ms": 721.01
+        },
+        {
+          "i": 63,
+          "file": "000000263068.jpg",
+          "n_det": 2,
+          "load_ms": 1.06,
+          "pre_ms": 1.62,
+          "infer_ms": 10.63,
+          "post_ms": 0.84,
+          "e2e_ms": 732.49
+        },
+        {
+          "i": 64,
+          "file": "000000263299.jpg",
+          "n_det": 3,
+          "load_ms": 1.36,
+          "pre_ms": 1.46,
+          "infer_ms": 10.56,
+          "post_ms": 0.88,
+          "e2e_ms": 743.94
+        },
+        {
+          "i": 65,
+          "file": "000000274272.jpg",
+          "n_det": 9,
+          "load_ms": 2.53,
+          "pre_ms": 1.06,
+          "infer_ms": 10.5,
+          "post_ms": 0.88,
+          "e2e_ms": 755.34
+        },
+        {
+          "i": 66,
+          "file": "000000278749.jpg",
+          "n_det": 13,
+          "load_ms": 1.16,
+          "pre_ms": 1.56,
+          "infer_ms": 10.52,
+          "post_ms": 0.83,
+          "e2e_ms": 766.71
+        },
+        {
+          "i": 67,
+          "file": "000000297085.jpg",
+          "n_det": 7,
+          "load_ms": 1.3,
+          "pre_ms": 1.44,
+          "infer_ms": 10.39,
+          "post_ms": 1.08,
+          "e2e_ms": 778.19
+        },
+        {
+          "i": 68,
+          "file": "000000297578.jpg",
+          "n_det": 7,
+          "load_ms": 0.79,
+          "pre_ms": 0.97,
+          "infer_ms": 10.65,
+          "post_ms": 0.91,
+          "e2e_ms": 789.77
+        },
+        {
+          "i": 69,
+          "file": "000000307145.jpg",
+          "n_det": 3,
+          "load_ms": 0.69,
+          "pre_ms": 0.96,
+          "infer_ms": 10.52,
+          "post_ms": 1.12,
+          "e2e_ms": 801.44
+        },
+        {
+          "i": 70,
+          "file": "000000319617.jpg",
+          "n_det": 4,
+          "load_ms": 0.49,
+          "pre_ms": 0.58,
+          "infer_ms": 9.63,
+          "post_ms": 1.02,
+          "e2e_ms": 812.1
+        },
+        {
+          "i": 71,
+          "file": "000000322895.jpg",
+          "n_det": 9,
+          "load_ms": 1.28,
+          "pre_ms": 0.59,
+          "infer_ms": 9.8,
+          "post_ms": 1.05,
+          "e2e_ms": 822.96
+        },
+        {
+          "i": 72,
+          "file": "000000326128.jpg",
+          "n_det": 3,
+          "load_ms": 2.1,
+          "pre_ms": 0.79,
+          "infer_ms": 10.65,
+          "post_ms": 0.89,
+          "e2e_ms": 834.52
+        },
+        {
+          "i": 73,
+          "file": "000000337055.jpg",
+          "n_det": 2,
+          "load_ms": 2.26,
+          "pre_ms": 0.61,
+          "infer_ms": 10.51,
+          "post_ms": 0.99,
+          "e2e_ms": 846.03
+        },
+        {
+          "i": 74,
+          "file": "000000341681.jpg",
+          "n_det": 3,
+          "load_ms": 1.66,
+          "pre_ms": 0.46,
+          "infer_ms": 9.48,
+          "post_ms": 0.98,
+          "e2e_ms": 856.51
+        },
+        {
+          "i": 75,
+          "file": "000000343803.jpg",
+          "n_det": 2,
+          "load_ms": 2.08,
+          "pre_ms": 0.83,
+          "infer_ms": 10.65,
+          "post_ms": 0.93,
+          "e2e_ms": 868.11
+        },
+        {
+          "i": 76,
+          "file": "000000343976.jpg",
+          "n_det": 4,
+          "load_ms": 1.24,
+          "pre_ms": 2.24,
+          "infer_ms": 10.78,
+          "post_ms": 0.95,
+          "e2e_ms": 879.86
+        },
+        {
+          "i": 77,
+          "file": "000000346638.jpg",
+          "n_det": 7,
+          "load_ms": 1.57,
+          "pre_ms": 0.58,
+          "infer_ms": 9.62,
+          "post_ms": 1.14,
+          "e2e_ms": 890.64
+        },
+        {
+          "i": 78,
+          "file": "000000350833.jpg",
+          "n_det": 3,
+          "load_ms": 2.33,
+          "pre_ms": 0.66,
+          "infer_ms": 10.0,
+          "post_ms": 1.09,
+          "e2e_ms": 901.74
+        },
+        {
+          "i": 79,
+          "file": "000000358427.jpg",
+          "n_det": 3,
+          "load_ms": 2.76,
+          "pre_ms": 0.79,
+          "infer_ms": 10.91,
+          "post_ms": 1.02,
+          "e2e_ms": 913.68
+        },
+        {
+          "i": 80,
+          "file": "000000359833.jpg",
+          "n_det": 5,
+          "load_ms": 2.04,
+          "pre_ms": 0.76,
+          "infer_ms": 10.6,
+          "post_ms": 0.87,
+          "e2e_ms": 925.17
+        },
+        {
+          "i": 81,
+          "file": "000000360137.jpg",
+          "n_det": 4,
+          "load_ms": 4.41,
+          "pre_ms": 0.36,
+          "infer_ms": 11.73,
+          "post_ms": 0.96,
+          "e2e_ms": 937.88
+        },
+        {
+          "i": 82,
+          "file": "000000360325.jpg",
+          "n_det": 11,
+          "load_ms": 1.87,
+          "pre_ms": 0.88,
+          "infer_ms": 10.92,
+          "post_ms": 0.84,
+          "e2e_ms": 949.66
+        },
+        {
+          "i": 83,
+          "file": "000000364636.jpg",
+          "n_det": 1,
+          "load_ms": 4.13,
+          "pre_ms": 0.82,
+          "infer_ms": 10.95,
+          "post_ms": 0.92,
+          "e2e_ms": 961.54
+        },
+        {
+          "i": 84,
+          "file": "000000374551.jpg",
+          "n_det": 1,
+          "load_ms": 1.18,
+          "pre_ms": 0.82,
+          "infer_ms": 10.52,
+          "post_ms": 1.06,
+          "e2e_ms": 973.13
+        },
+        {
+          "i": 85,
+          "file": "000000377486.jpg",
+          "n_det": 7,
+          "load_ms": 1.95,
+          "pre_ms": 0.82,
+          "infer_ms": 10.35,
+          "post_ms": 0.92,
+          "e2e_ms": 984.42
+        },
+        {
+          "i": 86,
+          "file": "000000378453.jpg",
+          "n_det": 10,
+          "load_ms": 1.11,
+          "pre_ms": 1.33,
+          "infer_ms": 9.55,
+          "post_ms": 1.11,
+          "e2e_ms": 995.1
+        },
+        {
+          "i": 87,
+          "file": "000000397681.jpg",
+          "n_det": 36,
+          "load_ms": 3.86,
+          "pre_ms": 0.42,
+          "infer_ms": 11.76,
+          "post_ms": 0.94,
+          "e2e_ms": 1007.81
+        },
+        {
+          "i": 88,
+          "file": "000000400573.jpg",
+          "n_det": 2,
+          "load_ms": 2.35,
+          "pre_ms": 0.83,
+          "infer_ms": 10.43,
+          "post_ms": 1.04,
+          "e2e_ms": 1019.29
+        },
+        {
+          "i": 89,
+          "file": "000000400803.jpg",
+          "n_det": 2,
+          "load_ms": 2.67,
+          "pre_ms": 0.56,
+          "infer_ms": 10.8,
+          "post_ms": 0.99,
+          "e2e_ms": 1031.09
+        },
+        {
+          "i": 90,
+          "file": "000000401250.jpg",
+          "n_det": 2,
+          "load_ms": 1.02,
+          "pre_ms": 0.65,
+          "infer_ms": 10.53,
+          "post_ms": 0.96,
+          "e2e_ms": 1042.59
+        },
+        {
+          "i": 91,
+          "file": "000000406570.jpg",
+          "n_det": 8,
+          "load_ms": 1.57,
+          "pre_ms": 0.51,
+          "infer_ms": 10.51,
+          "post_ms": 0.91,
+          "e2e_ms": 1054.02
+        },
+        {
+          "i": 92,
+          "file": "000000426372.jpg",
+          "n_det": 3,
+          "load_ms": 2.52,
+          "pre_ms": 1.34,
+          "infer_ms": 10.49,
+          "post_ms": 0.9,
+          "e2e_ms": 1065.43
+        },
+        {
+          "i": 93,
+          "file": "000000430875.jpg",
+          "n_det": 3,
+          "load_ms": 1.27,
+          "pre_ms": 1.67,
+          "infer_ms": 10.65,
+          "post_ms": 0.97,
+          "e2e_ms": 1077.08
+        },
+        {
+          "i": 94,
+          "file": "000000436883.jpg",
+          "n_det": 5,
+          "load_ms": 2.27,
+          "pre_ms": 0.76,
+          "infer_ms": 10.31,
+          "post_ms": 0.91,
+          "e2e_ms": 1088.32
+        },
+        {
+          "i": 95,
+          "file": "000000437351.jpg",
+          "n_det": 4,
+          "load_ms": 1.86,
+          "pre_ms": 1.86,
+          "infer_ms": 10.28,
+          "post_ms": 0.97,
+          "e2e_ms": 1099.59
+        },
+        {
+          "i": 96,
+          "file": "000000439994.jpg",
+          "n_det": 8,
+          "load_ms": 2.05,
+          "pre_ms": 0.74,
+          "infer_ms": 10.19,
+          "post_ms": 0.97,
+          "e2e_ms": 1110.77
+        },
+        {
+          "i": 97,
+          "file": "000000466602.jpg",
+          "n_det": 3,
+          "load_ms": 2.31,
+          "pre_ms": 0.72,
+          "infer_ms": 10.19,
+          "post_ms": 1.04,
+          "e2e_ms": 1122.01
+        },
+        {
+          "i": 98,
+          "file": "000000473118.jpg",
+          "n_det": 3,
+          "load_ms": 1.25,
+          "pre_ms": 1.71,
+          "infer_ms": 10.15,
+          "post_ms": 0.94,
+          "e2e_ms": 1133.11
+        },
+        {
+          "i": 99,
+          "file": "000000477805.jpg",
+          "n_det": 2,
+          "load_ms": 0.71,
+          "pre_ms": 0.99,
+          "infer_ms": 10.23,
+          "post_ms": 0.97,
+          "e2e_ms": 1144.32
+        }
+      ]
+    },
+    "compare": {
+      "files_compared": 100,
+      "detection_mismatches": {},
+      "consistent": true,
+      "serial_total_ms": 1383.401617050171,
+      "pipeline_total_ms": 1144.7281913757324,
+      "throughput_gain_x": 1.2084979014866413,
+      "serial_imgs_per_s": 72.28558848530923,
+      "pipeline_imgs_per_s": 87.35698199222313
+    }
+  }
+}

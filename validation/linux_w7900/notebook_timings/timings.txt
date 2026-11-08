@@ -1,0 +1,7 @@
+00_AMD_Environment_and_YOLO26l 9s rc=0
+01_Lab_A_CPU_vs_GPU_Baseline 14s rc=0
+02_Lab_B_OpenVINO_AMD_CPU 45s rc=0
+03_Lab_C_OpenVINO_INT8 31s rc=0
+04_Lab_D_ROCm_GPU_Optimization 32s rc=0
+05_Lab_E_AMD_CPU_GPU_Pipeline 12s rc=0
+ALL-NOTEBOOKS-DONE

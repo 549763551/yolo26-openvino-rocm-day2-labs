@@ -1,0 +1,43 @@
+{
+  "run_id": "labD_batch_batch1_forward_20261108_090843",
+  "meta": {
+    "experiment": "labD_batch",
+    "variant": "batch1_forward",
+    "device": "cuda(gfx1100)",
+    "runtime": "pytorch-rocm",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 3,
+    "iters": 10,
+    "num_images": 0,
+    "notes": "GPU forward only, batch=1",
+    "extra": {},
+    "timestamp": "2026-11-08T09:08:43",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 10,
+    "mean_ms": 10.221137046813965,
+    "p50_ms": 10.178791999816895,
+    "p95_ms": 11.17744197845459,
+    "min_ms": 9.248828887939453,
+    "max_ms": 11.472007751464844
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "results/raw/labD_batch/labD_batch_batch1_forward_20261108_090843.csv",
+    "csv_sha256": "295065a9c16de37d49cb4c1696b061016b6c04c7809c65e55d45fd7398dad886",
+    "json": "results/raw/labD_batch/labD_batch_batch1_forward_20261108_090843_summary.json",
+    "json_sha256": "2f34472559bb5df445ddae62ef6ee79073193e355347d3b4df1b4141e585b2f2"
+  }
+}

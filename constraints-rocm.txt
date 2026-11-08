@@ -1,0 +1,9 @@
+# constraints-rocm.txt
+# Prevent any later pip install from replacing the AMD ROCm PyTorch wheels.
+# The exact pins below MUST match the user-specified install command:
+#   torch[device-gfx1100]==2.12.0+rocm7.14.1
+#   torchvision[device-gfx1100]==0.27.0+rocm7.14.1
+#   torchaudio==2.11.0+rocm7.14.1
+torch==2.12.0+rocm7.14.1
+torchvision==0.27.0+rocm7.14.1
+torchaudio==2.11.0+rocm7.14.1

@@ -1,0 +1,43 @@
+{
+  "run_id": "labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710",
+  "meta": {
+    "experiment": "labA_cpu_vs_gpu",
+    "variant": "pytorch_rocm_gpu",
+    "device": "cuda(gfx1100)",
+    "runtime": "pytorch-rocm",
+    "model": "yolo26l.pt (official, 80-class COCO det)",
+    "model_sha256": "9fe3c544f2b19bebad7ea41e76d7ad3d88b7c2f10d11d24430c5311f6b32db26",
+    "imgsz": 640,
+    "batch": 1,
+    "precision": "fp32",
+    "warmup": 10,
+    "iters": 50,
+    "num_images": 0,
+    "notes": "end-to-end per image (pre+infer+post), cuda-synced",
+    "extra": {},
+    "timestamp": "2026-11-08T09:57:10",
+    "cpu": "AMD EPYC 9334 32-Core Processor",
+    "gpu": "AMD Radeon Pro W7900D",
+    "env": {
+      "torch": "2.12.0+rocm7.14.1",
+      "hip": "7.14.60850",
+      "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+      "ultralytics": "8.4.207"
+    }
+  },
+  "stats": {
+    "n": 50,
+    "mean_ms": 14.429810028076172,
+    "p50_ms": 13.274538040161133,
+    "p95_ms": 26.069941234588622,
+    "min_ms": 12.500638961791992,
+    "max_ms": 26.652145385742188
+  },
+  "derived": {},
+  "evidence": {
+    "csv": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710.csv",
+    "csv_sha256": "1ae92403297b5fb5274052626069cbb7b8ca68512b584f90b3e2c3eeb852f420",
+    "json": "results/raw/labA_cpu_vs_gpu/labA_cpu_vs_gpu_pytorch_rocm_gpu_20261108_095710_summary.json",
+    "json_sha256": "06fa25eb870f1164032d9cd2a0d1eb810d6f46a21d2cd74f8b5e36be2e8e23e5"
+  }
+}
